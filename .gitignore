@@ -1,0 +1,7 @@
+sysroot/
+*.o
+*.d
+*.bin
+kernel/kernel
+kernel/isodir
+*.vscode
