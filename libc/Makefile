@@ -19,6 +19,7 @@ CPPFLAGS += -I$(LIBINCLUDE) -I$(KERNELINCLUDE) -MD -ffreestanding -nostdlib -m32
 ARFLAGS = 
 
 SRCS +=\
+stdlib/malloc.c\
 stdio/putchar.c\
 string/memset.c\
 string/memcpy.c\
