@@ -10,12 +10,9 @@
 
 #include <tty.h>
 
-#undef MAX_PRINTF_LIMIT
 #define MAX_PRINTF_LIMIT (current_buffer.size)
 
 #endif
-
-
 
 int putchar(char c);
 int puts(const char *str);

@@ -40,3 +40,23 @@ void *malloc(size_t len)
 #endif
 
 }
+
+
+void free(void *_ptr)
+{
+
+    #ifdef _IN_KERNEL
+
+    struct allocheader *current_header = (struct allocheader*)_ptr;
+
+    if (current_header->tag != MALLOC_EMPTY)
+    {
+        current_header->tag = MALLOC_EMPTY;
+        current_header->alloc_length = 0;
+    }
+
+#else
+
+#endif
+
+}

@@ -8,16 +8,19 @@
 
 enum
 {
+    MALLOC_EMPTY = 0xbead,
     MALLOC_KERNEL = 0xdead,
     MALLOC_USER = 0xbeef,
 };
 
 struct allocheader
 {
-    uint16_t malloc_type;
+    uint16_t tag;
     size_t alloc_length;
 };
 
 void *malloc(size_t len);
+
+void free(void *_ptr);
 
 #endif

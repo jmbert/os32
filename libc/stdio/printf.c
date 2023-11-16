@@ -63,21 +63,18 @@ int vprintf(const char *fmt, va_list args)
     int err = vsprintf(str, fmt, args);
     if (err)
     {
+        free(str);
         return err;
     }
 
-    return puts(str);
+
+    err = puts(str);
+    free(str);
+    return err;
 }
 
 int printf(const char *fmt, ...)
 {
-    char *str = (char*)malloc(sizeof(char)*MAX_PRINTF_LIMIT);
-
-    if (str == NULL)
-    {
-        return 1;
-    }
-
     va_list args;
 
     va_start(args, fmt);
