@@ -5,10 +5,6 @@
 
 #include <stddef.h>
 
-#ifdef _IN_KERNEL
-
-#endif
-
 
 void *memset(void *str, int c, size_t n);
 
