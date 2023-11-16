@@ -21,6 +21,8 @@ ARFLAGS =
 SRCS +=\
 stdlib/malloc.c\
 stdio/putchar.c\
+stdio/puts.c\
+stdio/printf.c\
 string/memset.c\
 string/memcpy.c\
 math/comp.c\
