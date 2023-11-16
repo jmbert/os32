@@ -2,6 +2,8 @@ sysroot/
 *.o
 *.d
 *.bin
+*.so
+*.a
 kernel/kernel
 kernel/isodir
 *.vscode
