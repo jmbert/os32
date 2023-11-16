@@ -22,6 +22,7 @@ SRCS +=\
 stdio/putchar.c\
 string/memset.c\
 string/memcpy.c\
+math/comp.c\
 
 OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))
 
