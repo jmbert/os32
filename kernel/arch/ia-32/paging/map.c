@@ -57,8 +57,13 @@ int _map_page(vaddr addr, paddr from)
 int map_pages(vaddr to, paddr from, size_t length)
 {
     vaddr page_addr = ALIGN_ADDR(to);
+
+    if (length != ALIGN_ADDR(length))
+    {
+        length = ALIGN_ADDR(length) + PAGE_SIZE;
+    }
     
-    vaddr end_page_addr = page_addr + ALIGN_ADDR(length) + 1;
+    vaddr end_page_addr = page_addr + length;
 
     for (;page_addr < end_page_addr;page_addr += PAGE_SIZE, from += PAGE_SIZE) 
     {

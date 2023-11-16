@@ -7,7 +7,6 @@
 
 #include "paging.h"
 
-#define MAX_FRAMES 0x100
 
 enum {
     PAGE_FRAME_UNUSED,
