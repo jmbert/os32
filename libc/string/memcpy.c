@@ -1,6 +1,6 @@
 #include <string.h>
 
-void *memcpy(void *destination, const void *source, size_t num)
+void *memcpy(void *destination, void *source, size_t num)
 {
 #ifdef _IN_KERNEL
 
