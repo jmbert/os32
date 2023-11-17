@@ -14,6 +14,8 @@
 
 #include <multiboot.h>
 
+#include <vmem.h>
+
 void kernel_init(struct multiboot_info *mbinfo)
 {
 	map_pages(VMEM_START, mbinfo->framebuffer_addr, VMEM_SIZE);
