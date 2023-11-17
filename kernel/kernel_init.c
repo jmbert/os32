@@ -12,15 +12,24 @@
 
 #include <debug/exec.h>
 
-void kernel_init()
+#include <multiboot.h>
+
+void kernel_init(struct multiboot_info *mbinfo)
 {
-	map_pages(0xcf000000, 0xB8000, 0x2000);
+	map_pages(VMEM_START, mbinfo->framebuffer_addr, VMEM_SIZE);
+
+	framebuffer_width = mbinfo->framebuffer_width;
+	framebuffer_height = mbinfo->framebuffer_height;
+
 	map_pages(ARENA_START, PAGING_RESERVED_END-KERNEL_OFFSET, ARENA_SIZE);
 
-	tty_set_buffer((struct textbuffer)
+	tty_set_term((struct virtualterm)
 	{
-		0xcf000000,
-		256,	
+		(char*)malloc(sizeof(char)*1024),
+		(char*)malloc(sizeof(char)*1024),
+		(char*)malloc(sizeof(char)*1024),
+		0,
+		1024,	
 	});
 
 	for (unsigned char i = 0;i < 255;i++)

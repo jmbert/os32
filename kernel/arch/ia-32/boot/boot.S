@@ -44,7 +44,7 @@ boot_table_kernel:
 .global _start
 .type _start, @function
 _start:
-
+	
 
 	mov $boot_table_directory, %eax
 	mov $boot_table_kernel, %edx
@@ -89,6 +89,8 @@ _start:
 	movl $0x0, (boot_table_directory) 
 
 	mov $stack_top, %esp
+	add $_LD_KERNEL_OFFSET, %ebx
+	push %ebx
 	call arch_init
 	call kernel_init
 
