@@ -20,7 +20,7 @@ paddr pframe_alloc()
     {
         if (framemap[i] == PAGE_FRAME_UNUSED) 
         {
-            frame = (i * PAGE_SIZE) + PAGING_RESERVED_START;
+            frame = (vaddr)((i * PAGE_SIZE) + PAGING_RESERVED_START);
             framemap[i] = PAGE_FRAME_USED;
             break;
         }
@@ -28,7 +28,7 @@ paddr pframe_alloc()
 
     if (frame == 0)
     {
-        return frame;
+        return 0;
     }
 
     memset((void*)frame, 0, PAGE_SIZE);
@@ -38,7 +38,7 @@ paddr pframe_alloc()
     return fpaddr;
 }
 
-int pframe_free(vaddr frame)
+int pframe_free(paddr frame)
 {
 
     // TODO: Implement

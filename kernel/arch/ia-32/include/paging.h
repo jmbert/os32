@@ -4,6 +4,10 @@
 #include <addr.h>
 #include <stddef.h>
 
+typedef paddr *ptable;
+
+
+
 #define MAX_FRAMES 0x100
 
 #define PAGE_SIZE 0x1000
@@ -11,9 +15,7 @@
 #define PAGE_MASK 0xfffff000
 #define PAGING_RESERVED_SPACE MAX_FRAMES*TABLE_LENGTH*4
 #define PAGING_RESERVED_END (PAGING_RESERVED_START + PAGING_RESERVED_SPACE)
-#define TABLE_SIZE TABLE_LENGTH * 4
 #define TABLE_COVERAGE TABLE_LENGTH * PAGE_SIZE
-
 
 #define ALIGN_ADDR(addr) ((paddr)addr & PAGE_MASK)
 

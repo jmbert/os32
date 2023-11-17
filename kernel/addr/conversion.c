@@ -7,15 +7,15 @@
 
 paddr vaddrtopaddr(vaddr addr) 
 {
-    unsigned long pdindex = (unsigned long)addr >> 22;
-    unsigned long ptindex = (unsigned long)addr >> 12 & 0x03FF;
+    paddr pdindex = (paddr)addr >> 22;
+    paddr ptindex = (paddr)addr >> 12 & 0x03FF;
+
+    ptable pt = ((ptable)0xFFC00000) + (TABLE_LENGTH * pdindex);
+    if (!(*pt & 0x1))
+    {
+        return 0;
+    }
  
-    unsigned long *pd = (unsigned long *)0xFFFFF000;
-    // Here you need to check whether the PD entry is present.
- 
-    unsigned long *pt = ((unsigned long *)0xFFC00000) + (0x400 * pdindex);
-    // Here you need to check whether the PT entry is present.
- 
-    paddr phys = (paddr)((pt[ptindex] & ~0xFFF) + ((unsigned long)addr & 0xFFF));
+    paddr phys = (paddr)((pt[ptindex] & ~0xFFF) + ((paddr)addr & 0xFFF));
     return phys;
 }

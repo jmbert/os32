@@ -13,7 +13,7 @@ enum {
     PAGE_FRAME_USED,
 };
 
-vaddr pframe_alloc();
+paddr pframe_alloc();
 int pframe_free(paddr frame);
 
 #endif

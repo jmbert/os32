@@ -42,7 +42,7 @@ int _map_page(vaddr addr, paddr from)
     }
 
 
-    paddr *table = ALIGN_ADDR((paddr*)GET_PDE(tIndex)) + KERNEL_OFFSET;
+    ptable table = (ptable)(ALIGN_ADDR(GET_PDE(tIndex)) + KERNEL_OFFSET);
 
     size_t relPIndex = pIndex % TABLE_LENGTH;
 
