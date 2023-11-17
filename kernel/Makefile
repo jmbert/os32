@@ -20,7 +20,7 @@ LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 
 CFLAGS += -Wall -Wpedantic
-CPPFLAGS += -I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE) -MD -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables
+CPPFLAGS += -I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE) -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables
 
 include $(ARCHROOT)/arch.make
 
@@ -47,9 +47,8 @@ ERRLOG=/dev/null
 MSG_COL=1;32
 
 
-sysroot-init: create-sysroot
+kernel-all: create-sysroot compile link iso
 
-kernel-all: compile link iso
 
 install-libc: 
 
@@ -104,5 +103,3 @@ clean:
 	-rm kernel
 
 DEPS = $(OBJS:.o=.d)
-
--include $(DEPS);
