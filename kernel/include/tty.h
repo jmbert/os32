@@ -4,19 +4,28 @@
 #include <stddef.h>
 #include <stdint.h>
 
-struct textbuffer 
-{
-    char *buffer;
+extern int framebuffer_width;
+extern int framebuffer_height;
 
-    size_t size;
+struct virtualterm
+{
+    char *stdout;
+    char *stdin;
+    char *stderr;
 
     size_t cursor;
+
+    size_t size;
 };
 
-extern struct textbuffer current_buffer;
+extern struct virtualterm current_term;
 
 int tty_put_char(char c, uint8_t colour);
 
-void tty_set_buffer(struct textbuffer buf);
+void tty_set_term(struct virtualterm buf);
+
+int tty_write_buffer(struct virtualterm buf);
+
+int vmem_clear();
 
 #endif

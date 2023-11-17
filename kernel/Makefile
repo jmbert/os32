@@ -36,6 +36,8 @@ tty/set_term.c\
 tty/write_buffer.c\
 tty/clear.c\
 addr/conversion.c\
+multiboot/helpers.c\
+elf/helpers.c\
 
 SRCS += $(ARCH_SRCS)
 

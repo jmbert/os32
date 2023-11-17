@@ -13,6 +13,7 @@
 #include <debug/exec.h>
 
 #include <multiboot.h>
+#include <multiboot_helpers.h>
 
 #include <vmem.h>
 
@@ -34,11 +35,7 @@ void kernel_init(struct multiboot_info *mbinfo)
 		1024,	
 	});
 
-	for (unsigned char i = 0;i < 255;i++)
-	{
-		putchar(i);
-	}
-
+	print_mbinfo(mbinfo, MULTIBOOT_INFO_MEM_MAP);
 
 	return;
 }
