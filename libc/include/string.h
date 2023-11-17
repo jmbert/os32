@@ -8,7 +8,7 @@
 
 void *memset(void *str, int c, size_t n);
 
-void *memcpy(void *destination, const void *source, size_t num);
+void *memcpy(void *destination, void *source, size_t num);
 
 
 #endif
