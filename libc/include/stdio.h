@@ -10,7 +10,8 @@
 
 #include <tty.h>
 
-#define MAX_PRINTF_LIMIT (current_buffer.size)
+#undef MAX_PRINTF_LIMIT
+#define MAX_PRINTF_LIMIT (current_term.size)
 
 #endif
 

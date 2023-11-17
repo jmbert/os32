@@ -32,7 +32,9 @@ LDPFLAGS = -L$(SYSROOTLIB) -l:libc.a
 SRCS +=\
 kernel_init.c\
 tty/put_char.c\
-tty/set_buffer.c\
+tty/set_term.c\
+tty/write_buffer.c\
+tty/clear.c\
 addr/conversion.c\
 
 SRCS += $(ARCH_SRCS)
