@@ -1,8 +1,8 @@
-.PHONY:all  clean kernel libc sysroot
+.PHONY: clean sysroot kernel libc all
 
 all: libc kernel
 
-clean: 
+clean:
 	$(MAKE) -C kernel clean
 	$(MAKE) -C libc clean
 
