@@ -6,13 +6,16 @@
 
 typedef paddr *ptable;
 
-
+extern vaddr paging_start;
 
 #define MAX_FRAMES 0x100
 
 #define PAGE_SIZE 0x1000
 #define TABLE_LENGTH 0x400
 #define PAGE_MASK 0xfffff000
+
+#define PAGING_RESERVED_START paging_start
+
 #define PAGING_RESERVED_SPACE MAX_FRAMES*TABLE_LENGTH*4
 #define PAGING_RESERVED_END (PAGING_RESERVED_START + PAGING_RESERVED_SPACE)
 #define TABLE_COVERAGE TABLE_LENGTH * PAGE_SIZE

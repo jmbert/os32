@@ -41,6 +41,7 @@ tty/clear.c\
 addr/conversion.c\
 multiboot/helpers.c\
 elf/helpers.c\
+memory/memory.c\
 
 SRCS += $(ARCH_SRCS)
 
@@ -112,7 +113,7 @@ install-initramfs:
 	-mkdir initramfs
 	@-mkdir -p isodir/boot/grub
 	rsync -r $(ASSETS) $(KERNELROOT)/initramfs/ 
-	-tar -cf $(KERNELROOT)/initramfs.img $(KERNELROOT)/initramfs
+	-tar -cH ustar  $(KERNELROOT)/initramfs -f $(KERNELROOT)/initramfs.img
 	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/isodir/boot/
 	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/../sysroot/boot/
 	

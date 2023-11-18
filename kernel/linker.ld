@@ -44,6 +44,4 @@ SECTIONS
 	_LD_KERNEL_END = .;
 
 	. = ALIGN (4K); 
-
-	_LD_PAGING_RESERVED_START = .;
 }
