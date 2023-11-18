@@ -19,23 +19,25 @@
 
 void kernel_init(struct multiboot_info *mbinfo)
 {
+	map_pages(ARENA_START, PAGING_RESERVED_END-KERNEL_OFFSET, ARENA_SIZE);
 	map_pages(VMEM_START, mbinfo->framebuffer_addr, VMEM_SIZE);
 
-	framebuffer_width = mbinfo->framebuffer_width;
 	framebuffer_height = mbinfo->framebuffer_height;
+	framebuffer_width = mbinfo->framebuffer_width;
 
-	map_pages(ARENA_START, PAGING_RESERVED_END-KERNEL_OFFSET, ARENA_SIZE);
 
 	tty_set_term((struct virtualterm)
 	{
-		(char*)malloc(sizeof(char)*1024),
-		(char*)malloc(sizeof(char)*1024),
-		(char*)malloc(sizeof(char)*1024),
+		(char*)malloc(sizeof(char)*framebuffer_width*framebuffer_height*2),
+		(char*)malloc(sizeof(char)*framebuffer_width*framebuffer_height*2),
+		(char*)malloc(sizeof(char)*framebuffer_width*framebuffer_height*2),
 		0,
-		1024,	
+		framebuffer_width*framebuffer_height*2,
+		BLACK16,
+		LIGHTGREEN16,
 	});
 
-	print_mbinfo(mbinfo, MULTIBOOT_INFO_MEM_MAP);
+	print_mbinfo(mbinfo, MULTIBOOT_INFO_MODS);
 
 	return;
 }
