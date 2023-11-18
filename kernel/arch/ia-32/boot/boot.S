@@ -1,9 +1,7 @@
 #include <info/multiboot_info.h>
-#include <info/graphics_info.h>
 
 .set PALIGN, 1<<0
 .set MEMINFO, 1<<1
-.set VIDINFO, 1<<2
 
 .set FLAGS, (PALIGN | MEMINFO)
 
@@ -14,13 +12,6 @@
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
-
-.skip 24
-
-.long VIDEO_MODE
-.long VIDEO_WIDTH
-.long VIDEO_HEIGHT
-.long VIDEO_DEPTH
 
 .section .bss
 .align 16
@@ -44,7 +35,6 @@ boot_table_kernel:
 .global _start
 .type _start, @function
 _start:
-	
 
 	mov $boot_table_directory, %eax
 	mov $boot_table_kernel, %edx
