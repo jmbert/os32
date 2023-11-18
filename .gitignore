@@ -8,4 +8,10 @@ kernel/kernel
 kernel/isodir
 *.vscode
 
+*.iso
+*.img
+**/initramfs
+
+kernel/assets/fonts/*
+
 TODO

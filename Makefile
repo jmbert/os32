@@ -5,6 +5,8 @@ all: libc kernel
 clean:
 	$(MAKE) -C kernel clean
 	$(MAKE) -C libc clean
+	-rm initramfs.img
+	-rm os.iso
 
 
 kernel: sysroot
