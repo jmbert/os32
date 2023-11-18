@@ -1,15 +1,19 @@
 #include <tty.h>
+#include <ttycol.h>
 #include <vmem.h>
 
 #include <math.h>
 #include <string.h>
-
 #include <debug/exec.h>
 
-int framebuffer_width;
-int framebuffer_height;
-
 int clear_flag = 0;
+
+uint8_t current_colour_fg;
+uint8_t current_colour_bg;
+
+uint32_t framebuffer_width;
+uint32_t framebuffer_height;
+
 
 int tty_write_buffer(struct virtualterm buf)
 {
@@ -17,10 +21,9 @@ int tty_write_buffer(struct virtualterm buf)
     int y = 0;
     int x = 0;
     
-    for (int i = 0;(x+y*framebuffer_width)*2 < VMEM_SIZE;x++, i++)
+    for (int i = 0;(x+y*framebuffer_width) < VMEM_SIZE;i++)
     {
-        char c = buf.stdout[i + line_offset*framebuffer_width*2];
-        char col = buf.stdout[i+1 + line_offset*framebuffer_width*2];
+        char c = buf.stdout[i + line_offset*framebuffer_width];
 
         if (c == '\0')
         {
@@ -30,14 +33,16 @@ int tty_write_buffer(struct virtualterm buf)
         switch (c)
         {
         case '\n':
-            x = -2;
+            x = 0;
             y++;
             break;
         case '\t':
-            x += 6;
+            x += 8;
             break;
         default:
-            VMEM[x+y*framebuffer_width*2] = c;
+            VMEM[x + y * framebuffer_width*2] = c;
+            VMEM[x + y * framebuffer_width*2 + 1] = COL16(current_colour_fg, current_colour_bg);
+            x += 2;
             break;
         }
 

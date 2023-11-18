@@ -5,7 +5,7 @@
 
 #include <debug/exec.h>
 
-int tty_put_char(char c, uint8_t colour) 
+int tty_put_char(char c) 
 {
     if (current_term.stdout == NULL)
     {
@@ -17,8 +17,7 @@ int tty_put_char(char c, uint8_t colour)
         return 1;
     }
 
-	current_term.stdout[current_term.cursor*2] = c;
-    current_term.stdout[current_term.cursor*2 + 1] = colour;
+	current_term.stdout[current_term.cursor] = c;
     current_term.cursor++;
 
     if (c == '\n')

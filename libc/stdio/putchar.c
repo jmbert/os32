@@ -11,7 +11,7 @@
 int putchar(char c)
 {
 #ifdef _IN_KERNEL
-    return tty_put_char(c, COL16(GREEN16, BLACK16)); 
+    return tty_put_char(c); 
 #else
 
 #endif
