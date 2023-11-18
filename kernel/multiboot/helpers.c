@@ -1,8 +1,11 @@
 
 #include <multiboot_helpers.h>
 #include <elf_helpers.h>
+#include <vbe.h>
 
 #include <info/link_info.h>
+
+#include <debug/exec.h>
 
 void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
 {
@@ -54,8 +57,8 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
             for (int i = 0; i < mbinfo->mods_count; i++)
             {
                 printf("\tModule start: 0x%x\n", mods[i].mod_start);
-                printf("\tModule end: 0x%x", mods[i].mod_end);
-                printf("\tModule cmdline: \"%s\"\n", mods[i].cmdline + KERNEL_OFFSET);
+                printf("\tModule end: 0x%x\n", mods[i].mod_end);
+                printf("\tModule string: \"%s\"\n", mods[i].cmdline + KERNEL_OFFSET);
             }
             printf("\n");
         }
@@ -93,7 +96,6 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
                 printf("\tMap Entry Length: 0x%x\n", map->len);
                 printf("\tMap Entry Type: 0x%x\n\n", map->type);
             }
-            printf("\n");
         }
     } else if (view_flags & MULTIBOOT_INFO_MEM_MAP) {
         printf("Memory Map Info Unavailable\n\n");
@@ -139,19 +141,35 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
     if (flags & MULTIBOOT_INFO_VBE_INFO)
     {
         printf("VBE Mode: 0x%x\n", mbinfo->vbe_mode);
-        printf("VBE Mode Info: 0x%x\n", mbinfo->vbe_mode_info);
-        printf("VBE Control Info: 0x%x\n\n", mbinfo->vbe_control_info);
+        if (mbinfo->vbe_control_info != 0)
+        {
+            printf("VESA Control Info:\n");
+            uint32_t cinfo = mbinfo->vbe_control_info + KERNEL_OFFSET;
+
+            struct VbeInfoBlock *info = (struct VbeInfoBlock *)cinfo;
+            printf("\tVESA Version: v0x%x\n", info->VbeVersion);
+            printf("\tTotal Memory (64K): 0x%x\n", info->TotalMemory);
+            printf("\tSupported Modes:\n");
+            uint16_t *modes = info->VideoModePtr;
+            for (;*modes != (uint16_t*)0xFFFF;modes++)
+            {
+                printf("\t\tMode: 0x%x\n", *modes);
+            }
+
+            printf("\n");
+        }
+        
     } else if (view_flags & MULTIBOOT_INFO_VBE_INFO) {
         printf("VBE Info Unavailable\n\n");
     }
     if (flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO)
     {
-        printf("Framebuffer Address: 0x%x\n", mbinfo->framebuffer_addr);
         printf("Framebuffer Type: 0x%x\n", mbinfo->framebuffer_type);
-        printf("Framebuffer Palette: 0x%x\n", mbinfo->framebuffer_palette_addr);
         printf("Framebuffer Width: 0x%x\n", mbinfo->framebuffer_width);
         printf("Framebuffer Height: 0x%x\n", mbinfo->framebuffer_height);
         printf("Framebuffer Bits Per Pixel: 0x%x\n", mbinfo->framebuffer_bpp);
+        printf("Framebuffer Address: 0x%x\n", mbinfo->framebuffer_addr);
+        printf("Framebuffer Palette: 0x%x\n", mbinfo->framebuffer_palette_addr);
     } else if (view_flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO) {
         printf("Framebuffer Info Unavailable\n\n");
     }
