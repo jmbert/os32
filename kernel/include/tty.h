@@ -4,9 +4,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-extern int framebuffer_width;
-extern int framebuffer_height;
-
 struct virtualterm
 {
     char *stdout;
@@ -16,11 +13,20 @@ struct virtualterm
     size_t cursor;
 
     size_t size;
+
+    uint8_t default_col_bg;
+    uint8_t default_col_fg;
 };
 
 extern struct virtualterm current_term;
 
-int tty_put_char(char c, uint8_t colour);
+extern uint8_t current_colour_fg;
+extern uint8_t current_colour_bg;
+
+extern uint32_t framebuffer_width;
+extern uint32_t framebuffer_height;
+
+int tty_put_char(char c);
 
 void tty_set_term(struct virtualterm buf);
 
