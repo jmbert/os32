@@ -73,7 +73,7 @@ int vsprintf(char *str, const char *fmt, va_list args)
             break;
 
         case 'c':
-            char c = va_arg(args, char);
+            char c = va_arg(args, int);
             *str = c;
             break;
         case 'd':

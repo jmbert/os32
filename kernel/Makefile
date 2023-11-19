@@ -113,7 +113,7 @@ clean:
 
 install-initramfs:
 	-mkdir initramfs
-	@-mkdir -p isodir/boot/grub
+	-mkdir -p isodir/boot/grub
 	rsync -r $(ASSETS) $(KERNELROOT)/initramfs/ 
 	-tar -cH ustar  $(KERNELROOT)/initramfs -f $(KERNELROOT)/initramfs.img
 	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/isodir/boot/

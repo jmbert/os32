@@ -9,28 +9,57 @@ struct memrange
     uint32_t lower;
     uint32_t higher;
 };
-
-extern struct memrange memrange;
-
-struct kernelmmap
+struct memmap
 {
     uint32_t addr;
     uint32_t size;
+
+    uint32_t type;
 };
 
-extern struct kernelmmap kernelmap[1024];
-extern uint32_t kernelmaplen;
+#define MAX_MAP_ENTRIES 0x1000
 
-extern multiboot_memory_map_t *memmap;
-extern uint32_t memmap_len;
+#define RANGES_CONFLICT(addr1, len1, addr2, len2)   (((addr1 > addr2) && addr1 < (addr2 + len2)) ||\
+                                                    ((addr2 > addr1) && addr2 < (addr1 + len1)) ||\
+                                                    ((addr2 == addr1)))
 
-#define NEWKERNELMAP(addr, len) kernelmap[kernelmaplen++] = (struct kernelmmap){\
-    addr,\
-    len\
+extern struct memrange memrange;
+
+extern struct memmap memmap[MAX_MAP_ENTRIES];
+extern uint32_t memmaplen;
+
+#define INSERT_MAP(map, position)\
+    memmaplen++;\
+    for (int __index = (memmaplen) - 1; __index >= position; __index--)\
+    {\
+        memmap[__index] = memmap[__index - 1];\
+    }\
+    memmap[position] = map\
+
+enum
+{
+    MEMMAP_MEM_AVAILABLE = 1,
+    MEMMAP_MEM_RESERVED,
+    MEMMAP_MEM_ACPI_RECLAIMABLE,
+    MEMMAP_MEM_NVS,
+    MEMMAP_MEM_BADRAM,
+
+    MEMMAP_MEM_KERNEL,
+    MEMMAP_MEM_PAGEFRAMES,
+    MEMMAP_MEM_USER,
+
+    MEMMAP_GRUB_MODULES,
 };
 
-uint32_t reserve_modules(multiboot_module_t *modules, uint32_t modules_count);
+#define NEWUSERMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_USER) == NULL);
+#define NEWPAGINGMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_PAGEFRAMES);
+#define NEWKERNELMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_KERNEL);
 
-uint32_t alloc_mem(uint64_t memsize);
+int _new_map(uint32_t addr, uint32_t len, uint8_t type);
+
+void reserve_modules(multiboot_module_t *modules, uint32_t modules_count);
+void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap);
+
+uint32_t alloc_mem(uint64_t memsize, uint8_t type);
 
 #endif

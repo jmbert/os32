@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <kmalloc.h>
 
 #include <debug/exec.h>
@@ -16,6 +17,8 @@
 #include <multiboot_helpers.h>
 
 #include <vmem.h>
+#include <memory.h>
+#include <fs/tar.h>
 
 void kernel_init(struct multiboot_info *mbinfo)
 {
@@ -37,7 +40,8 @@ void kernel_init(struct multiboot_info *mbinfo)
 		LIGHTGREEN16,
 	});
 
-	print_mbinfo(mbinfo, MULTIBOOT_INFO_MODS);
+	print_maps();
+
 
 	return;
 }

@@ -13,8 +13,8 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
 
     if (flags & MULTIBOOT_INFO_MEMORY)
     {
-        printf("Lower memory: 0x%x\n", mbinfo->mem_lower);
-        printf("Upper memory: 0x%x\n\n", mbinfo->mem_upper);
+        printf("Lower memory: 0x%x\n", mbinfo->mem_lower * 0x400);
+        printf("Upper memory: 0x%x\n\n", mbinfo->mem_upper * 0x400);
     } else if (view_flags & MULTIBOOT_INFO_MEMORY) {
         printf("Memory Info Unavailable\n\n");
     }
@@ -90,11 +90,11 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
         {
             multiboot_memory_map_t *map = (multiboot_memory_map_t *)(mbinfo->mmap_addr + KERNEL_OFFSET);
 
-            for (int traveled = 0; traveled < mbinfo->mmap_length; traveled+= map->size, map = (multiboot_memory_map_t*)((char*)map + map->size))
+            for (int traveled = 0; traveled < mbinfo->mmap_length; traveled+= map->size + sizeof(map->size), map = (multiboot_memory_map_t*)((char*)map + map->size +sizeof(map->size)))
             {
-                printf("\tMap Entry Base Address: 0x%x\n", map->addr);
-                printf("\tMap Entry Length: 0x%x\n", map->len);
-                printf("\tMap Entry Type: 0x%x\n\n", map->type);
+                printf("Base Address:%x%x,", map->addr_high, map->addr_low);
+                printf("Length:%x%x,", map->len_high, map->len_low);
+                printf("Type:%x\n", map->type);
             }
         }
     } else if (view_flags & MULTIBOOT_INFO_MEM_MAP) {
