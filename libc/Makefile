@@ -25,6 +25,7 @@ stdio/puts.c\
 stdio/printf.c\
 string/memset.c\
 string/memcpy.c\
+string/strcmp.c\
 math/comp.c\
 
 OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))

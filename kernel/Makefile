@@ -42,6 +42,8 @@ addr/conversion.c\
 multiboot/helpers.c\
 elf/helpers.c\
 memory/memory.c\
+fs/tar/lookup.c\
+fs/tar/helpers.c\
 
 SRCS += $(ARCH_SRCS)
 
