@@ -60,6 +60,6 @@ int _new_map(uint64_t addr, uint64_t len, uint8_t type);
 void reserve_modules(multiboot_module_t *modules, uint32_t modules_count);
 void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap);
 
-uint64_t alloc_mem(uint64_t memsize, uint8_t type);
+uint64_t alloc_mem(uint64_t memsize, uint8_t type, uint64_t align);
 
 #endif

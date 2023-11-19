@@ -14,11 +14,14 @@ uint64_t memmaplen = 0;
 
 
 
-uint64_t _findmem(uint64_t memsize)
+uint64_t _findmem(uint64_t memsize, uint64_t align)
 {
     for (size_t i = 0; i < memmaplen; i++)
     {
         struct memmap map = memmap[i];
+
+        uint64_t toAlign = align - (map.addr % align);
+        map.addr += toAlign;
 
         /* Only care about available areas with enough memory */
         if (map.type == MULTIBOOT_MEMORY_AVAILABLE && map.size >= memsize)
@@ -29,9 +32,9 @@ uint64_t _findmem(uint64_t memsize)
     return 0;
 }
 
-uint64_t alloc_mem(uint64_t memsize, uint8_t type)
+uint64_t alloc_mem(uint64_t memsize, uint8_t type, uint64_t align)
 {
-    uint64_t found_mem = _findmem(memsize);
+    uint64_t found_mem = _findmem(memsize, align);
     if (found_mem != 0)
     {
         _new_map(found_mem, memsize, type);
@@ -71,6 +74,7 @@ void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap)
 
 int _new_map(uint64_t addr, uint64_t len, uint8_t type)
 {
+    
     for (int i = 0;i < memmaplen;i++)
     {
         uint8_t maptype = memmap[i].type;
