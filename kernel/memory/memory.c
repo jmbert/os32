@@ -1,5 +1,7 @@
 #include <memory.h>
 
+#include <stdio.h>
+
 #include <multiboot.h>
 #include <stddef.h>
 #include <info/link_info.h>
@@ -8,11 +10,11 @@
 struct memrange memrange;
 
 struct memmap memmap[MAX_MAP_ENTRIES];
-uint32_t memmaplen = 0;
+uint64_t memmaplen = 0;
 
 
 
-uint32_t _findmem(uint64_t memsize)
+uint64_t _findmem(uint64_t memsize)
 {
     for (size_t i = 0; i < memmaplen; i++)
     {
@@ -27,9 +29,9 @@ uint32_t _findmem(uint64_t memsize)
     return 0;
 }
 
-uint32_t alloc_mem(uint64_t memsize, uint8_t type)
+uint64_t alloc_mem(uint64_t memsize, uint8_t type)
 {
-    uint32_t found_mem = _findmem(memsize);
+    uint64_t found_mem = _findmem(memsize);
     if (found_mem != 0)
     {
         _new_map(found_mem, memsize, type);
@@ -57,8 +59,8 @@ void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap)
         {
             struct memmap nmap = (struct memmap)
             {
-                map->addr_low,
-                map->len_low,
+                (((uint64_t)map->addr_high) << 32) | (map->addr_low),
+                (((uint64_t)map->len_high) << 32) | (map->len_low),
                 map->type
             };
 
@@ -67,14 +69,14 @@ void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap)
     }
 }
 
-int _new_map(uint32_t addr, uint32_t len, uint8_t type)
+int _new_map(uint64_t addr, uint64_t len, uint8_t type)
 {
     for (int i = 0;i < memmaplen;i++)
     {
         uint8_t maptype = memmap[i].type;
 
-        uint32_t mapaddr = memmap[i].addr;
-        uint32_t maplen = memmap[i].size;
+        uint64_t mapaddr = memmap[i].addr;
+        uint64_t maplen = memmap[i].size;
 
         /* Check if the maps conflict */
         if (RANGES_CONFLICT(addr, len, mapaddr, maplen))
@@ -85,7 +87,7 @@ int _new_map(uint32_t addr, uint32_t len, uint8_t type)
                 return 1;
             }
             /* Check the space that would be available on overwrite */
-            uint32_t space = (addr + len) - mapaddr;
+            uint64_t space = (addr + len) - mapaddr;
             if (space <= 0)
             {
                 continue;
@@ -182,8 +184,8 @@ void print_maps()
 
     for (int i = 0;i < memmaplen;i++)
     {
-        printf("Base Address:%x,", memmap[i].addr);
-        printf("Length:%x,", memmap[i].size);
+        printf("Base Address:%lx,", memmap[i].addr);
+        printf("Length:%lx,", memmap[i].size);
         print_mmap_type(memmap[i].type);
         printf("\n");
     }

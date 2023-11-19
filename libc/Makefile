@@ -10,13 +10,13 @@ SYSROOT=$(LIBROOT)/../sysroot
 CC = $(TARGETTOOL)-gcc
 LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
-AR = $(TARGETTOOL)-ar
+AR = $(TARGETTOOL)-ar 
 
 CFLAGS += -Wall -Wpedantic
 CPPFLAGS += -I$(LIBINCLUDE) -I$(KERNELINCLUDE) -MD -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables
 
 
-ARFLAGS = 
+ARFLAGS =
 
 SRCS +=\
 stdlib/malloc.c\
@@ -40,6 +40,7 @@ libc-all: compile link
 
 install-libc:
 	cp $(LIBC) $(SYSROOT)/lib/$(LIBC)
+	cp $(LIBGCC) $(SYSROOT)/lib/
 
 %.o: %.c
 	@printf "\e[$(MSG_COL)mCompiling $@ from $<\e[m\n"

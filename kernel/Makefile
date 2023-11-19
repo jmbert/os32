@@ -6,7 +6,7 @@ KERNELARCH = $(KERNELROOT)/arch
 
 LIBCINCLUDE=$(KERNELROOT)/../libc/include
 
-ASSETS = $(KERNELROOT)/assets
+INITRAMFSSUBS=fonts\
 
 SYSROOT=$(KERNELROOT)/../sysroot
 SYSROOTINCLUDE=$(SYSROOT)/include
@@ -23,14 +23,14 @@ LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 
 CFLAGS += -Wall -Wpedantic
-CPPFLAGS += -MD -I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE) -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables
+CPPFLAGS += -MD -I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE) -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables -lgcc -lc
 
 include $(ARCHROOT)/arch.make
 
 LDSCRIPT=linker.ld
 
-LDFLAGS = -T$(LDSCRIPT) -nostdlib -melf_i386
-LDPFLAGS = -L$(SYSROOTLIB) -l:libc.a
+LDFLAGS = -T$(LDSCRIPT) -nostdlib -melf_i386 --sysroot=$(SYSROOT)
+LDPFLAGS = -lc -lgcc 
 
 SRCS +=\
 kernel_init.c\
@@ -114,7 +114,7 @@ clean:
 install-initramfs:
 	-mkdir initramfs
 	-mkdir -p isodir/boot/grub
-	rsync -r $(ASSETS) $(KERNELROOT)/initramfs/ 
+	rsync -r $(INITRAMFSSUBS) $(KERNELROOT)/initramfs/ 
 	-tar -cH ustar  $(KERNELROOT)/initramfs -f $(KERNELROOT)/initramfs.img
 	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/isodir/boot/
 	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/../sysroot/boot/

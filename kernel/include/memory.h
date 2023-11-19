@@ -6,15 +6,15 @@
 
 struct memrange
 {
-    uint32_t lower;
-    uint32_t higher;
+    uint64_t lower;
+    uint64_t higher;
 };
 struct memmap
 {
-    uint32_t addr;
-    uint32_t size;
+    uint64_t addr;
+    uint64_t size;
 
-    uint32_t type;
+    uint64_t type;
 };
 
 #define MAX_MAP_ENTRIES 0x1000
@@ -26,7 +26,7 @@ struct memmap
 extern struct memrange memrange;
 
 extern struct memmap memmap[MAX_MAP_ENTRIES];
-extern uint32_t memmaplen;
+extern uint64_t memmaplen;
 
 #define INSERT_MAP(map, position)\
     memmaplen++;\
@@ -55,11 +55,11 @@ enum
 #define NEWPAGINGMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_PAGEFRAMES);
 #define NEWKERNELMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_KERNEL);
 
-int _new_map(uint32_t addr, uint32_t len, uint8_t type);
+int _new_map(uint64_t addr, uint64_t len, uint8_t type);
 
 void reserve_modules(multiboot_module_t *modules, uint32_t modules_count);
 void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap);
 
-uint32_t alloc_mem(uint64_t memsize, uint8_t type);
+uint64_t alloc_mem(uint64_t memsize, uint8_t type);
 
 #endif

@@ -17,9 +17,9 @@ void reverse(char str[], int length)
     }
 }
 
-char* iota(uint32_t num, char* str, uint32_t base)
+char* iota(uint64_t num, char* str, uint64_t base)
 {
-    uint32_t i = 0;
+    uint64_t i = 0;
  
     /* Handle 0 explicitly, otherwise empty string is
      * printed for 0 */
@@ -31,7 +31,7 @@ char* iota(uint32_t num, char* str, uint32_t base)
  
     // Process individual digits
     while (num != 0) {
-        uint32_t rem = num % base;
+        uint64_t rem = num % base;
         if (rem > 9)
         {
             str[i++] = 'a' + (rem - 10);
@@ -61,6 +61,12 @@ int vsprintf(char *str, const char *fmt, va_list args)
             continue;
         }
         fmt++;
+        int longint = 0;
+        if (*fmt == 'l')
+        {
+            longint = 1;
+            fmt++;
+        }
         switch (*fmt)
         {
         case 's':
@@ -77,7 +83,14 @@ int vsprintf(char *str, const char *fmt, va_list args)
             *str = c;
             break;
         case 'd':
-            int d = va_arg(args, int);
+            uint64_t d = 0;
+            if (longint)
+            {   
+                d = va_arg(args, uint64_t);
+            } else 
+            {
+                d = va_arg(args, uint32_t);
+            }
             char *ds = iota(d, str, 10);
             for (;*ds != '\0';ds++,str++)
             {
@@ -86,7 +99,14 @@ int vsprintf(char *str, const char *fmt, va_list args)
             str--;
             break;
         case 'x':
-            int x = va_arg(args, int);
+            uint64_t x = 0;
+            if (longint)
+            {   
+                x = va_arg(args, uint64_t);
+            } else 
+            {
+                x = va_arg(args, uint32_t);
+            }
             char *xs = iota(x, str, 16);
             for (;*xs != '\0';xs++,str++)
             {
