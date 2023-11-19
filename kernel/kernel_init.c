@@ -22,7 +22,7 @@
 
 void kernel_init(struct multiboot_info *mbinfo)
 {
-	map_pages(ARENA_START, PAGING_RESERVED_END-KERNEL_OFFSET, ARENA_SIZE);
+	mmap(ARENA_START, ARENA_SIZE);
 	map_pages(VMEM_START, mbinfo->framebuffer_addr, VMEM_SIZE);
 
 	framebuffer_height = mbinfo->framebuffer_height;

@@ -20,8 +20,17 @@ uint64_t _findmem(uint64_t memsize, uint64_t align)
     {
         struct memmap map = memmap[i];
 
+        /* 0 is our failure address, do not allocate there */
+        if (map.addr == 0)
+        {
+            continue;
+        }
+
         uint64_t toAlign = align - (map.addr % align);
-        map.addr += toAlign;
+        if (toAlign != align)
+        {
+            map.addr += toAlign;
+        }
 
         /* Only care about available areas with enough memory */
         if (map.type == MULTIBOOT_MEMORY_AVAILABLE && map.size >= memsize)
@@ -43,7 +52,14 @@ uint64_t alloc_mem(uint64_t memsize, uint8_t type, uint64_t align)
 }
 
 
-void reserve_modules(multiboot_module_t *modules, uint32_t modules_count)
+void reserve_mem(multiboot_info_t *mbinfo)
+{
+    _reserve_mmemmap(mbinfo);
+    _reserve_modules((multiboot_module_t *)(mbinfo->mods_addr + KERNEL_OFFSET), mbinfo->mods_count);
+}
+
+
+void _reserve_modules(multiboot_module_t *modules, uint32_t modules_count)
 {
     for (size_t i = 0; i < modules_count; i++)
     {
@@ -51,9 +67,8 @@ void reserve_modules(multiboot_module_t *modules, uint32_t modules_count)
     }   
 }
 
-void reserve_mmemmap(multiboot_info_t *mbinfo, uint32_t mmmap)
+void _reserve_mmemmap(multiboot_info_t *mbinfo)
 {
-    
     if (mbinfo->mmap_addr != 0)
     {
         multiboot_memory_map_t *map = (multiboot_memory_map_t *)(mbinfo->mmap_addr + KERNEL_OFFSET);
@@ -174,7 +189,6 @@ void print_mmap_type(uint32_t type)
     case MEMMAP_MEM_PAGEFRAMES:
         printf("PAGEFRAMES");
         break;
-    
     default:
         printf("UNKNOWN");
         break;

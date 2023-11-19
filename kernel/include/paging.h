@@ -8,3 +8,6 @@
 #else
 #error "Unknown Target"
 #endif
+
+
+int mmap(vaddr to, size_t size);

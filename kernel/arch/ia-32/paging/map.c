@@ -16,7 +16,7 @@ int _map_table(vaddr addr, paddr from)
     return 0;
 }
 
-int _map_page(vaddr addr, paddr from)
+int map_page(vaddr addr, paddr from)
 {
     vaddr aligned_addr = ALIGN_ADDR(addr);
 
@@ -67,7 +67,7 @@ int map_pages(vaddr to, paddr from, size_t length)
 
     for (;page_addr < end_page_addr;page_addr += PAGE_SIZE, from += PAGE_SIZE) 
     {
-        if (_map_page(page_addr, from) == -1)
+        if (map_page(page_addr, from) == -1)
         {
             return -1;
         }

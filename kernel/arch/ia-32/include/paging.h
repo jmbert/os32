@@ -31,6 +31,8 @@ extern void _invlpg(paddr addr);
 #define SET_PDE(index, value) (GET_PDIR())[index] = value
 #define GET_PDE(index) (GET_PDIR()[index])
 
+int map_page(vaddr to, paddr from);
+
 int map_pages(vaddr to, paddr from, size_t length);
 
 #endif

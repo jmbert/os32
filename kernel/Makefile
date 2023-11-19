@@ -44,6 +44,8 @@ elf/helpers.c\
 memory/memory.c\
 fs/tar/lookup.c\
 fs/tar/helpers.c\
+paging/mmap.c\
+
 
 SRCS += $(ARCH_SRCS)
 

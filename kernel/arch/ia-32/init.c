@@ -17,13 +17,12 @@ vaddr paging_start;
 
 void arch_init(struct multiboot_info *mbinfo)
 {
-    reserve_mmemmap(mbinfo, mbinfo->mmap_length);
-    reserve_modules((multiboot_module_t *)(mbinfo->mods_addr + KERNEL_OFFSET), mbinfo->mods_count);
+    reserve_mem(mbinfo);
 
     NEWKERNELMAP(KERNEL_PHYS_START, KERNEL_SIZE);
 
-    paging_start = alloc_mem(PAGING_RESERVED_SPACE, MEMMAP_MEM_PAGEFRAMES) + KERNEL_OFFSET;
-    NEWPAGINGMAP(paging_start, PAGING_RESERVED_SPACE);
+    paging_start = alloc_mem(PAGING_RESERVED_SPACE, MEMMAP_MEM_PAGEFRAMES, PAGE_SIZE) + KERNEL_OFFSET;
+
 
     init_gdt();
     init_idt();
