@@ -3,7 +3,6 @@
 #ifdef _IN_KERNEL
 
 #include <tty.h>
-#include <ttycol.h>
 
 #endif
 
