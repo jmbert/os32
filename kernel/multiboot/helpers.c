@@ -76,8 +76,6 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
     {
         multiboot_elf_section_header_table_t eheader = mbinfo->u.elf_sec;
         Elf32_Shdr *sections = (Elf32_Shdr*)(eheader.addr + KERNEL_OFFSET);
-        printf("Elf Section Entry Count: %d\n", eheader.num);
-        printf("Elf Section Entry Size: 0x%x\n", eheader.size);
         print_secHeaders(sections, eheader.num, "\t", KERNEL_OFFSET, (char*)(sections[eheader.shndx].sh_addr + KERNEL_OFFSET));
         printf("\n");
     } else if (view_flags & MULTIBOOT_INFO_ELF_SHDR) {
@@ -92,9 +90,9 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
 
             for (int traveled = 0; traveled < mbinfo->mmap_length; traveled+= map->size + sizeof(map->size), map = (multiboot_memory_map_t*)((char*)map + map->size +sizeof(map->size)))
             {
-                printf("Base Address:%x%x,", map->addr_high, map->addr_low);
-                printf("Length:%x%x,", map->len_high, map->len_low);
-                printf("Type:%x\n", map->type);
+                printf("\tBase Address:%x%x\n", map->addr_high, map->addr_low);
+                printf("\tLength:%x%x\n", map->len_high, map->len_low);
+                printf("\tType:%x\n\n", map->type);
             }
         }
     } else if (view_flags & MULTIBOOT_INFO_MEM_MAP) {
@@ -153,7 +151,8 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
             uint16_t *modes = info->VideoModePtr;
             for (;*modes != (uint16_t*)0xFFFF;modes++)
             {
-                printf("\t\tMode: 0x%x\n", *modes);
+                struct vbe_mode_info_structure mode = *(struct vbe_mode_info_structure*)modes;
+                printf("%dx%dx%d", mode.width, mode.height, mode.bpp);
             }
 
             printf("\n");
@@ -164,12 +163,13 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
     }
     if (flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO)
     {
-        printf("Framebuffer Type: 0x%x\n", mbinfo->framebuffer_type);
-        printf("Framebuffer Width: 0x%x\n", mbinfo->framebuffer_width);
-        printf("Framebuffer Height: 0x%x\n", mbinfo->framebuffer_height);
-        printf("Framebuffer Bits Per Pixel: 0x%x\n", mbinfo->framebuffer_bpp);
-        printf("Framebuffer Address: 0x%x\n", mbinfo->framebuffer_addr);
-        printf("Framebuffer Palette: 0x%x\n", mbinfo->framebuffer_palette_addr);
+        printf("Framebuffer:\n");
+        printf("\tType: 0x%x\n", mbinfo->framebuffer_type);
+        printf("\tWidth: 0x%x\n", mbinfo->framebuffer_width);
+        printf("\tHeight: 0x%x\n", mbinfo->framebuffer_height);
+        printf("\tBits Per Pixel: 0x%x\n", mbinfo->framebuffer_bpp);
+        printf("\tAddress: 0x%x\n", mbinfo->framebuffer_addr);
+        printf("\tPalette: 0x%x\n", mbinfo->framebuffer_palette_addr);
     } else if (view_flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO) {
         printf("Framebuffer Info Unavailable\n\n");
     }

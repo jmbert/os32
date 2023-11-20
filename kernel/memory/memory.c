@@ -202,9 +202,8 @@ void print_maps()
 
     for (int i = 0;i < memmaplen;i++)
     {
-        printf("Base Address:%lx,", memmap[i].addr);
-        printf("Length:%lx,", memmap[i].size);
+        printf("\t0x%lx-0x%lx (0x%lx) : ", memmap[i].addr, memmap[i].addr + memmap[i].size, memmap[i].size);
         print_mmap_type(memmap[i].type);
-        printf("\n");
+        printf("\n\n");
     }
 }
