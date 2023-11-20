@@ -8,22 +8,45 @@
 
 int clear_flag = 0;
 
-uint8_t current_colour_fg;
-uint8_t current_colour_bg;
+struct framebuffer framebuffer;
 
-uint32_t framebuffer_width;
-uint32_t framebuffer_height;
+uint32_t current_colour_fg;
+uint32_t current_colour_bg;
+
+uint8_t *font = NULL;
 
 
-int tty_write_buffer(struct virtualterm buf)
+void write_char(uint32_t x, uint32_t y, char c)
+{
+    uint8_t *charmap = font + ((uint32_t)c)*CHAR_HEIGHT;
+
+    x *= CHAR_WIDTH;
+    y *= CHAR_HEIGHT;
+
+    for (int cx = 0; cx < CHAR_WIDTH; cx++)
+    { 
+        for (int cy = 0; cy < CHAR_HEIGHT; cy++)
+        {
+            uint8_t is_fg = charmap[cy] & 1 << ((CHAR_WIDTH-1)-cx);
+
+
+            (current_term.swap)[INDEX(x+cx, y+cy)] = is_fg ? current_colour_fg : current_colour_bg;
+        }
+    }
+
+}
+
+int tty_write_buffer()
 {
     static int line_offset = 0;
     int y = 0;
     int x = 0;
+
+    int printed = 0;
     
-    for (int i = 0;(x+y*framebuffer_width) < VMEM_SIZE;i++)
+    for (int i = 0;(x+y*framebuffer.width) < VMEM_SIZE;i++)
     {
-        char c = buf.stdout[i + line_offset*framebuffer_width];
+        char c = current_term.stdout[i + line_offset*framebuffer.height/CHAR_HEIGHT];
 
         if (c == '\0')
         {
@@ -37,16 +60,17 @@ int tty_write_buffer(struct virtualterm buf)
             y++;
             break;
         case '\t':
-            x += 8;
+            int toAlign = 4 - (x % 4);
+            x += toAlign;
             break;
         default:
-            VMEM[x + y * framebuffer_width*2] = c;
-            VMEM[x + y * framebuffer_width*2 + 1] = COL16(current_colour_fg, current_colour_bg);
-            x += 2;
+            write_char(x, y, c);
+            printed++;
+            x++;
             break;
         }
 
-        if (x%framebuffer_width*2 == 0 && x != 0)
+        if (x%framebuffer.width == 0 && x != 0)
         {
             x = 0;
             y++;
@@ -54,10 +78,21 @@ int tty_write_buffer(struct virtualterm buf)
     }
 
 
-    if ((x + y * framebuffer_width)*2 >= framebuffer_width*framebuffer_height*2)
+    if (y >= framebuffer.height/CHAR_HEIGHT)
     {
         line_offset++;
     }
 
+    if (printed > 0)
+    {
+        tty_swap();
+    }
+
+
     return 0;
+}
+
+int tty_swap()
+{
+    memcpy(VMEM, current_term.swap, VMEM_SIZE);
 }

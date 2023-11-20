@@ -22,7 +22,6 @@ int tty_put_char(char c)
 
     if (c == '\n')
     {
-        vmem_clear();
         tty_write_buffer(current_term);
     }
 
