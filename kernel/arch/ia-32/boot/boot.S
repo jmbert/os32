@@ -2,8 +2,9 @@
 
 .set PALIGN, 1<<0
 .set MEMINFO, 1<<1
+.set VIDINFO, 1<<2
 
-.set FLAGS, (PALIGN | MEMINFO)
+.set FLAGS, (PALIGN | MEMINFO | VIDINFO)
 
 .set CHECKSUM, -(MAGIC + FLAGS)
 
@@ -12,6 +13,10 @@
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
+
+.long 0, 0, 0, 0, 0
+.long 0 # 0 = set graphics mode
+.long 1920, 1080, 32 # Width, height, depth
 
 .section .bss
 .align 16
