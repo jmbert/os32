@@ -39,11 +39,18 @@ SECTIONS
 
 	.bss ALIGN (4K) : AT ( ADDR( .bss ) - _LD_KERNEL_OFFSET )
 	{
-		*(COMMON)
+		* (COMMON)
 		* (.bss);
 	}
 
 	_LD_KERNEL_END = .;
 
 	. = ALIGN (4K); 
+
+	/DISCARD/ :
+	{
+		* (.comment)
+		* (.debug_*)
+		* (.eh_frame)
+	}
 }
