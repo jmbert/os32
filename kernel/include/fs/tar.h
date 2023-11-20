@@ -5,6 +5,8 @@
 
 #define MAX_DIR_ITEMS 0x200
 
+#define DATA_FROM_HEADER(addr) ((uint32_t)(addr) + 512)
+
 struct tar_header
 {
     uint8_t name[100];
