@@ -3,7 +3,7 @@
 
 
 #define ARENA_START 0xcd000000
-#define ARENA_SIZE 0x1fff000
+#define ARENA_SIZE  0x13000000
 #define ARENA_END (ARENA_START + ARENA_SIZE)
 
 
