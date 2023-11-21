@@ -22,7 +22,7 @@ CC = $(TARGETTOOL)-gcc
 LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 
-CFLAGS += -Wall -Wpedantic
+CFLAGS += -Wall -Wpedantic -std=gnu23
 CPPFLAGS += -MD -I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE) -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables -lgcc -lc
 
 include $(ARCHROOT)/arch.make
