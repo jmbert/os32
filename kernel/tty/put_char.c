@@ -22,7 +22,7 @@ int tty_put_char(char c)
 
     if (c == '\n')
     {
-        tty_write_buffer(current_term);
+        tty_write_buffer();
     }
 
     return 0;

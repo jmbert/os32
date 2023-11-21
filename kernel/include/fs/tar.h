@@ -26,7 +26,7 @@ struct tar_header
     uint8_t devMinor[8];
 
     uint8_t namePrefix[32];
-}[[packed]];
+};
 
 enum
 {

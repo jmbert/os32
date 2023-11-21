@@ -14,4 +14,6 @@ kernel/isodir
 
 kernel/assets/fonts/*
 
+**/bochsrc
+
 TODO

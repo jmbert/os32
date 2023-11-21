@@ -84,6 +84,7 @@ _start:
 	movl $0x0, (boot_table_directory) 
 
 	mov $stack_top, %esp
+	mov %esp, %ebp
 	add $_LD_KERNEL_OFFSET, %ebx
 	push %ebx
 	call arch_init
