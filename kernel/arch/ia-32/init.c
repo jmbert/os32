@@ -23,10 +23,6 @@ void arch_init(struct multiboot_info *mbinfo)
 
     paging_start = alloc_mem(PAGING_RESERVED_SPACE, MEMMAP_MEM_PAGEFRAMES, PAGE_SIZE) + KERNEL_OFFSET;
 
-
-    init_gdt();
-    init_idt();
-
     ptable pdir = (ptable)pframe_alloc();
     ((ptable)((paddr)pdir + KERNEL_OFFSET))[0x3ff] = ALIGN_ADDR((paddr)pdir) | 0x3;
     paddr ktable = pframe_alloc();
