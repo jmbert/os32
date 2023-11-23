@@ -1,18 +1,24 @@
 #include <stdio.h>
+#include <stddef.h>
 
-#ifdef _IN_KERNEL
-
-#include <tty.h>
-
-#endif
-
+int putc(FILE *stream, char c)
+{
+    if (stream == NULL)
+    {
+        return -2;
+    }
+    if (FILE_LENGTH_LEFT(stream) > 0)
+    {
+        *(stream->buf) = c;
+        (stream->buf)++;
+        return 0;
+    } else
+    {
+        return EOF;
+    }
+}
 
 int putchar(char c)
 {
-#ifdef _IN_KERNEL
-    return tty_put_char(c); 
-#else
-
-#endif
-
+    putc(_GET_STDOUT(), c);
 }

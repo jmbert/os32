@@ -3,7 +3,6 @@
 
 int strcmp(char *src1, char *src2)
 {
-    int i=0;
     while((*src1!='\0') || (*src2!='\0'))
     {
         if(*src1 > *src2)

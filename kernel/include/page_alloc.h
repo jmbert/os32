@@ -1,5 +1,5 @@
-#ifndef _IA32_P_ALLOC_H
-#define _IA32_P_ALLOC_H
+#ifndef _PALLOC_H
+#define _PALLOC_H
 
 #include <addr.h>
 

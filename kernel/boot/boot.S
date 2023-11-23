@@ -35,7 +35,6 @@ boot_table_kernel:
 .section .text
 
 .extern kernel_init
-.extern arch_init
 
 .global _start
 .type _start, @function
@@ -87,7 +86,6 @@ _start:
 	mov %esp, %ebp
 	add $_LD_KERNEL_OFFSET, %ebx
 	push %ebx
-	call arch_init
 	call kernel_init
 
 _exit:	cli

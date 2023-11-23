@@ -1,10 +1,19 @@
 #include <stdio.h>
 
 
+int fputs(FILE *stream, const char *str)
+{
+    for (;*str!='\0';str++)
+    {
+        int err = putc(stream, *str);
+        if (err) {return err;}
+    }
+
+    return 0;
+}
+
 int puts(const char *str)
 {
-#ifdef _IN_KERNEL
-
     for (;*str!='\0';str++)
     {
         int err = putchar(*str);
@@ -12,8 +21,4 @@ int puts(const char *str)
     }
 
     return 0;
-
-#else
-
-#endif
 }

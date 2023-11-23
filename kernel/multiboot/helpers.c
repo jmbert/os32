@@ -7,9 +7,9 @@
 
 #include <debug/exec.h>
 
-void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
+void print_mbinfo(struct multiboot_info *mbinfo, unsigned int view_flags)
 {
-    uint32_t flags = mbinfo->flags & view_flags;
+    unsigned int flags = mbinfo->flags & view_flags;
 
     if (flags & MULTIBOOT_INFO_MEMORY)
     {
@@ -138,22 +138,17 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
     }
     if (flags & MULTIBOOT_INFO_VBE_INFO)
     {
-        printf("VBE Mode: 0x%x\n", mbinfo->vbe_mode);
         if (mbinfo->vbe_control_info != 0)
         {
             printf("VESA Control Info:\n");
-            uint32_t cinfo = mbinfo->vbe_control_info + KERNEL_OFFSET;
+            unsigned int cinfo = mbinfo->vbe_control_info + KERNEL_OFFSET;
 
             struct VbeInfoBlock *info = (struct VbeInfoBlock *)cinfo;
-            printf("\tVESA Version: v0x%x\n", info->VbeVersion);
+            uint16_t *modes = (uint16_t *)(info->VideoModePtr);
+            printf("\tVESA Version: v0x%x\n", info->VESAVersion);
             printf("\tTotal Memory (64K): 0x%x\n", info->TotalMemory);
-            printf("\tSupported Modes:\n");
-            uint16_t *modes = info->VideoModePtr;
-            for (;*modes != (uint16_t*)0xFFFF;modes++)
-            {
-                struct vbe_mode_info_structure mode = *(struct vbe_mode_info_structure*)modes;
-                printf("%dx%dx%d", mode.width, mode.height, mode.bpp);
-            }
+            printf("\tCurrent Mode: 0x%x\n", mbinfo->vbe_mode);
+            printf("\tSupported Modes: 0x%x\n", modes);
 
             printf("\n");
         }
@@ -167,9 +162,8 @@ void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags)
         printf("\tType: 0x%x\n", mbinfo->framebuffer_type);
         printf("\tWidth: 0x%x\n", mbinfo->framebuffer_width);
         printf("\tHeight: 0x%x\n", mbinfo->framebuffer_height);
-        printf("\tBits Per Pixel: 0x%x\n", mbinfo->framebuffer_bpp);
+        printf("\tBits Per Pixel: %d\n", mbinfo->framebuffer_bpp);
         printf("\tAddress: 0x%x\n", mbinfo->framebuffer_addr);
-        printf("\tPalette: 0x%x\n", mbinfo->framebuffer_palette_addr);
     } else if (view_flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO) {
         printf("Framebuffer Info Unavailable\n\n");
     }

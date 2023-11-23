@@ -21,7 +21,6 @@
 #ifndef _ELF_H
 #define        _ELF_H 1
 
-
 /* Standard ELF types.  */
 
 #include <stdint.h>

@@ -9,7 +9,7 @@
 
 struct tar_header
 {
-    uint8_t name[100];
+    char name[100];
     uint8_t mode[8];
     uint8_t uid[8];
     uint8_t guid[8];
@@ -20,12 +20,20 @@ struct tar_header
     uint8_t linkName[100];
     uint8_t indicator[6];
     uint8_t ver[2];
-    uint8_t owner[32];
-    uint8_t gowner[32];
+    char owner[32];
+    char gowner[32];
     uint8_t devMajor[8];
     uint8_t devMinor[8];
 
-    uint8_t namePrefix[32];
+    char namePrefix[32];
+};
+
+struct tar_file
+{
+    struct tar_header *header;
+    void *data;
+
+    
 };
 
 enum
@@ -41,10 +49,6 @@ enum
 
 int decodeOctal(unsigned char *str, int size);
 
-struct tar_header *tar_lookup(uint32_t archive, uint8_t *fileName);
-
-char **tar_list_subdirs(uint32_t archive, uint8_t *fileName);
-
-void print_tar_file(struct tar_header *file);
+struct tar_header *tar_lookup(uint32_t archive, char *fileName);
 
 #endif

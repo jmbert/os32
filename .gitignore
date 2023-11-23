@@ -10,10 +10,9 @@ kernel/isodir
 
 *.iso
 *.img
-**/initramfs
 
-kernel/assets/fonts/*
 
 **/bochsrc
+**/.bochsrc
 
 TODO

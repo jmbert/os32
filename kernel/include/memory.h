@@ -62,6 +62,8 @@ enum
 #define NEWPAGINGMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_PAGEFRAMES);
 #define NEWKERNELMAP(addr, len) _new_map(addr, len, MEMMAP_MEM_KERNEL);
 
+void mman_init(multiboot_info_t *mbinfo);
+
 int _new_map(uint64_t addr, uint64_t len, uint8_t type);
 
 void reserve_mem(multiboot_info_t *mbinfo);

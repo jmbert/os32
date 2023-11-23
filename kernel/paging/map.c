@@ -1,5 +1,5 @@
-#include <arch-specific/paging.h>
-#include <arch-specific/page_alloc.h>
+#include <paging.h>
+#include <page_alloc.h>
 
 #include <debug/mem.h>
 #include <debug/exec.h>
@@ -7,7 +7,7 @@
 
 int _map_table(vaddr addr, paddr from)
 {
-    vaddr aligned_addr = ALIGN_ADDR(addr);
+    vaddr aligned_addr = PALIGN_ADDR(addr);
 
     size_t tIndex = (aligned_addr / PAGE_SIZE / TABLE_LENGTH);
 
@@ -18,7 +18,7 @@ int _map_table(vaddr addr, paddr from)
 
 int map_page(vaddr addr, paddr from)
 {
-    vaddr aligned_addr = ALIGN_ADDR(addr);
+    vaddr aligned_addr = PALIGN_ADDR(addr);
 
     size_t pIndex = aligned_addr / PAGE_SIZE;
 
@@ -42,7 +42,7 @@ int map_page(vaddr addr, paddr from)
     }
 
 
-    ptable table = (ptable)(ALIGN_ADDR(GET_PDE(tIndex)) + KERNEL_OFFSET);
+    ptable table = (ptable)(PALIGN_ADDR(GET_PDE(tIndex)) + KERNEL_OFFSET);
 
     size_t relPIndex = pIndex % TABLE_LENGTH;
 
@@ -56,11 +56,11 @@ int map_page(vaddr addr, paddr from)
 
 int map_pages(vaddr to, paddr from, size_t length)
 {
-    vaddr page_addr = ALIGN_ADDR(to);
+    vaddr page_addr = PALIGN_ADDR(to);
 
-    if (length != ALIGN_ADDR(length))
+    if (length != PALIGN_ADDR(length))
     {
-        length = ALIGN_ADDR(length) + PAGE_SIZE;
+        length = PALIGN_ADDR(length) + PAGE_SIZE;
     }
     
     vaddr end_page_addr = page_addr + length;

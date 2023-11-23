@@ -1,0 +1,3 @@
+#ifndef MAX_FILE_DESCRIPTORS
+#define MAX_FILE_DESCRIPTORS 0x100
+#endif

@@ -6,26 +6,22 @@ KERNELARCH = $(KERNELROOT)/arch
 
 LIBCINCLUDE=$(KERNELROOT)/../libc/include
 
-INITRAMFSSUBS=fonts\
+BUILD=$(KERNELROOT)/build
 
 SYSROOT=$(KERNELROOT)/../sysroot
 SYSROOTINCLUDE=$(SYSROOT)/include
-SYSROOTARCHINCLUDE=$(SYSROOT)/include/arch-specific
 SYSROOTLIBCINCLUDE=$(SYSROOT)/include/libc
 SYSROOTLIB=$(SYSROOT)/lib
 SYSROOTASSETS=$(SYSROOT)/assets
 
-ARCHROOT = $(KERNELARCH)/$(TARGET)
-ARCHINCLUDE = $(ARCHROOT)/include
+TARGETTOOL?=i686-elf
 
 CC = $(TARGETTOOL)-gcc
 LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 
-CFLAGS += -Wall -Wpedantic -std=gnu23
-CPPFLAGS += -MD -I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE) -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables -lgcc -lc
-
-include $(ARCHROOT)/arch.make
+CFLAGS += 
+CPPFLAGS+=-I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE)
 
 LDSCRIPT=linker.ld
 
@@ -34,21 +30,31 @@ LDPFLAGS = -lc -lgcc
 
 SRCS +=\
 kernel_init.c\
-tty/put_char.c\
-tty/set_term.c\
-tty/write_buffer.c\
+kernel_main.c\
 addr/conversion.c\
 multiboot/helpers.c\
 elf/helpers.c\
 memory/memory.c\
+memory/mman_init.c\
+memory/log.c\
+fs/_add_new_file.c\
+fs/new_virtual_file.c\
 fs/tar/lookup.c\
 fs/tar/helpers.c\
 paging/mmap.c\
+paging/map.c\
+paging/pfalloc.c\
+paging/helpers.S\
+paging/paging_init.c\
+boot/boot.S\
+graphics/_graphics_info.c\
+graphics/graphics_swap.c\
+terminal/create_terminal.c\
+terminal/terminal_write_swap.c\
+bits/var/fs.c\
+colours/_convert_colour.c
 
-
-SRCS += $(ARCH_SRCS)
-
-OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))
+OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 
 
 KERNELBIN=kernel.bin
@@ -57,35 +63,35 @@ KERNELBIN=kernel.bin
 ERRLOG=/dev/null
 MSG_COL=1;32
 
+SUBDIRS = $(patsubst %,$(BUILD)/%,$(shell tree -dfi --noreport --gitfile=$(KERNELROOT)/../.gitignore $(KERNELROOT)))
 
-kernel-all: create-sysroot compile link install-initramfs iso
+
+kernel-all: compile link install-initramfs iso
 
 
 install-libc: 
 
-%.o: %.c
+$(BUILD)/%.o: %.c
 	@printf "\e[$(MSG_COL)mCompiling $@ from $<\e[m\n"
 	$(CC) -c $(CFLAGS) $< -o $@ $(CPPFLAGS)
-	@printf "\e[$(MSG_COL)mCompiled $@\e[m\n"
 
-%.o: %.S
+$(BUILD)/%.o: %.S
 	@printf "\e[$(MSG_COL)mCompiling $@ from $<\e[m\n"
 	$(CC) -c $(CFLAGS) $< -o $@ $(CPPFLAGS)
-	@printf "\e[$(MSG_COL)mCompiled $@\e[m\n"
 
 $(KERNELBIN): $(OBJS)
 	@printf "\e[$(MSG_COL)mLinking $@ from $^\e[m\n"
 	$(LD) $(LDFLAGS) -o $@ $^ $(LDPFLAGS)
-	@printf "\e[$(MSG_COL)mLinked $@\e[m\n"
 
 
 create-sysroot:
-	-mkdir  $(SYSROOT)
-	rsync -r $(KERNELINCLUDE) $(SYSROOT)/
-	cp -Lrp $(ARCHINCLUDE)/ $(SYSROOTARCHINCLUDE)
-	cp -Lrp $(LIBCINCLUDE)/ $(SYSROOTLIBCINCLUDE)/
-	-mkdir $(SYSROOT)/boot 
-	-mkdir $(SYSROOTLIB)
+	@-mkdir $(BUILD)
+	@-mkdir $(SUBDIRS)
+	@-mkdir  $(SYSROOT)
+	@rsync -r $(KERNELINCLUDE) $(SYSROOT)/
+	@cp -Lrp $(LIBCINCLUDE)/ $(SYSROOTLIBCINCLUDE)/
+	@-mkdir $(SYSROOT)/boot 
+	@-mkdir $(SYSROOTLIB)
 
 compile: $(OBJS)
 
@@ -95,30 +101,27 @@ iso: link
 	@printf "\e[$(MSG_COL)mCreating ISO\e[m\n"
 	@cp $(KERNELBIN) $(KERNELROOT)/isodir/boot/
 	@cp grub.cfg $(KERNELROOT)/isodir/boot/grub/
-	@grub-mkrescue -o $(KERNELROOT)/kernel $(KERNELROOT)/isodir
+	@grub-mkrescue -quiet -o $(KERNELROOT)/kernel $(KERNELROOT)/isodir
 	@printf "\e[$(MSG_COL)mCreated ISO\e[m\n"
 
 install-kernel:
 	@cp kernel $(SYSROOT)/boot/kernel
 
 clean:
-	-rm $(OBJS)
-	-rm $(DEPS)
-	-rm -rf $(SYSROOT) 
-	-rm $(KERNELINCLUDE)/arch-specific
-	-rm $(KERNELBIN)
-	-rm -rf $(KERNELROOT)/isodir
-	-rm $(KERNELROOT)/kernel
-	-rm -rf $(KERNELROOT)/initramfs
-	-rm $(KERNELROOT)/initramfs.img
+	@-rm -rf $(BUILD)
+	@-rm -rf $(SYSROOT)
+	@-rm $(KERNELBIN)
+	@-rm -rf $(KERNELROOT)/isodir
+	@-rm $(KERNELROOT)/kernel
+	@-rm -rf $(KERNELROOT)/initramfs
+	@-rm $(KERNELROOT)/initramfs.img
 
 install-initramfs:
-	-mkdir initramfs
-	-mkdir -p isodir/boot/grub
-	rsync -r $(INITRAMFSSUBS) $(KERNELROOT)/initramfs/ 
-	-tar -cH ustar  $(KERNELROOT)/initramfs -f $(KERNELROOT)/initramfs.img
-	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/isodir/boot/
-	-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/../sysroot/boot/
+	@-mkdir initramfs
+	@-mkdir -p isodir/boot/grub
+	@-tar -cH ustar  $(KERNELROOT)/initramfs -f $(KERNELROOT)/initramfs.img
+	@-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/isodir/boot/
+	@-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/../sysroot/boot/
 	
 
 DEPS = $(OBJS:.o=.d)

@@ -15,8 +15,8 @@ enum
 
 struct allocheader
 {
-    uint16_t tag;
-    size_t alloc_length;
+    unsigned int tag;
+    unsigned int alloc_length;
 };
 
 void *malloc(size_t len);

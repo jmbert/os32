@@ -69,7 +69,7 @@ int vsprintf(char *str, const char *fmt, va_list args)
         }
         switch (*fmt)
         {
-        case 's':
+        case 's':;
             char *s = va_arg(args, char*);
             for (;*s != '\0';s++,str++)
             {
@@ -78,11 +78,11 @@ int vsprintf(char *str, const char *fmt, va_list args)
             str--;
             break;
 
-        case 'c':
+        case 'c':;
             char c = va_arg(args, int);
             *str = c;
             break;
-        case 'd':
+        case 'd':;
             uint64_t d = 0;
             if (longint)
             {   
@@ -98,7 +98,7 @@ int vsprintf(char *str, const char *fmt, va_list args)
             }
             str--;
             break;
-        case 'x':
+        case 'x':;
             uint64_t x = 0;
             if (longint)
             {   
@@ -115,13 +115,13 @@ int vsprintf(char *str, const char *fmt, va_list args)
             str--;
             break;
 
-        default:
+        default: //
             fmt--;
             *str = *fmt;
             break;
         }
     }
-    
+    return 0;
 }
 
 int sprintf(char *str, const char *fmt, ...)
@@ -133,6 +133,28 @@ int sprintf(char *str, const char *fmt, ...)
 
     return  vsprintf(str, fmt, args);
 
+}
+
+
+int vfprintf(FILE *stream, const char *fmt, va_list args)
+{
+    char *str = (char*)malloc(sizeof(char)*MAX_PRINTF_LIMIT);
+
+    if (str == NULL)
+    {
+        return 1;
+    }
+    int err = vsprintf(str, fmt, args);
+    if (err)
+    {
+        free(str);
+        return err;
+    }
+
+
+    err = fputs(stream, str);
+    free(str);
+    return err;
 }
 
 int vprintf(const char *fmt, va_list args)
@@ -154,6 +176,16 @@ int vprintf(const char *fmt, va_list args)
     err = puts(str);
     free(str);
     return err;
+}
+
+int fprintf(FILE *stream, const char *fmt, ...)
+{
+    
+    va_list args;
+
+    va_start(args, fmt);
+
+    return vfprintf(stream, fmt, args);
 }
 
 int printf(const char *fmt, ...)

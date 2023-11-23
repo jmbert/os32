@@ -12,81 +12,6 @@ struct memrange memrange;
 struct memmap memmap[MAX_MAP_ENTRIES];
 uint64_t memmaplen = 0;
 
-
-
-uint64_t _findmem(uint64_t memsize, uint64_t align)
-{
-    for (size_t i = 0; i < memmaplen; i++)
-    {
-        struct memmap map = memmap[i];
-
-        /* 0 is our failure address, do not allocate there */
-        if (map.addr == 0)
-        {
-            continue;
-        }
-
-        uint64_t toAlign = align - (map.addr % align);
-        if (toAlign != align)
-        {
-            map.addr += toAlign;
-        }
-
-        /* Only care about available areas with enough memory */
-        if (map.type == MULTIBOOT_MEMORY_AVAILABLE && map.size >= memsize)
-        {
-            return map.addr;
-        }
-    }
-    return 0;
-}
-
-uint64_t alloc_mem(uint64_t memsize, uint8_t type, uint64_t align)
-{
-    uint64_t found_mem = _findmem(memsize, align);
-    if (found_mem != 0)
-    {
-        _new_map(found_mem, memsize, type);
-    }
-    return found_mem;
-}
-
-
-void reserve_mem(multiboot_info_t *mbinfo)
-{
-    _reserve_mmemmap(mbinfo);
-    _reserve_modules((multiboot_module_t *)(mbinfo->mods_addr + KERNEL_OFFSET), mbinfo->mods_count);
-}
-
-
-void _reserve_modules(multiboot_module_t *modules, uint32_t modules_count)
-{
-    for (size_t i = 0; i < modules_count; i++)
-    {
-        _new_map(modules->mod_start, modules->mod_end-modules->mod_start, MEMMAP_GRUB_MODULES);
-    }   
-}
-
-void _reserve_mmemmap(multiboot_info_t *mbinfo)
-{
-    if (mbinfo->mmap_addr != 0)
-    {
-        multiboot_memory_map_t *map = (multiboot_memory_map_t *)(mbinfo->mmap_addr + KERNEL_OFFSET);
-
-        for (int traveled = 0; traveled < mbinfo->mmap_length; traveled+= map->size + sizeof(map->size), map = (multiboot_memory_map_t*)((char*)map + map->size +sizeof(map->size)))
-        {
-            struct memmap nmap = (struct memmap)
-            {
-                (((uint64_t)map->addr_high) << 32) | (map->addr_low),
-                (((uint64_t)map->len_high) << 32) | (map->len_low),
-                map->type
-            };
-
-            memmap[memmaplen++] = nmap;
-        }
-    }
-}
-
 int _new_map(uint64_t addr, uint64_t len, uint8_t type)
 {
     
@@ -158,52 +83,41 @@ int _new_map(uint64_t addr, uint64_t len, uint8_t type)
     return 1;
 }
 
-void print_mmap_type(uint32_t type)
+
+
+uint64_t _findmem(uint64_t memsize, uint64_t align)
 {
-    switch (type)
+    for (size_t i = 0; i < memmaplen; i++)
     {
-    case MEMMAP_MEM_AVAILABLE:
-        printf("AVAILABLE");
-        break;
-    case MEMMAP_MEM_RESERVED:
-        printf("RESERVED");
-        break;
-    case MEMMAP_MEM_BADRAM:
-        printf("BADRAM");
-        break;
-    case MEMMAP_GRUB_MODULES:
-        printf("MODULE");
-        break;
-    case MEMMAP_MEM_ACPI_RECLAIMABLE:
-        printf("ACPI");
-        break;
-    case MEMMAP_MEM_USER:
-        printf("USER");
-        break;
-    case MEMMAP_MEM_KERNEL:
-        printf("KERNEL");
-        break;
-    case MEMMAP_MEM_NVS:
-        printf("NVS");
-        break;
-    case MEMMAP_MEM_PAGEFRAMES:
-        printf("PAGEFRAMES");
-        break;
-    default:
-        printf("UNKNOWN");
-        break;
+        struct memmap map = memmap[i];
+
+        /* 0 is our failure address, do not allocate there */
+        if (map.addr == 0)
+        {
+            continue;
+        }
+
+        uint64_t toAlign = align - (map.addr % align);
+        if (toAlign != align)
+        {
+            map.addr += toAlign;
+        }
+
+        /* Only care about available areas with enough memory */
+        if (map.type == MULTIBOOT_MEMORY_AVAILABLE && map.size >= memsize)
+        {
+            return map.addr;
+        }
     }
+    return 0;
 }
 
-void print_maps()
+uint64_t alloc_mem(uint64_t memsize, uint8_t type, uint64_t align)
 {
-
-    printf("Memory Map:\n");
-
-    for (int i = 0;i < memmaplen;i++)
+    uint64_t found_mem = _findmem(memsize, align);
+    if (found_mem != 0)
     {
-        printf("\t0x%lx-0x%lx (0x%lx) : ", memmap[i].addr, memmap[i].addr + memmap[i].size, memmap[i].size);
-        print_mmap_type(memmap[i].type);
-        printf("\n\n");
+        _new_map(found_mem, memsize, type);
     }
+    return found_mem;
 }

@@ -13,6 +13,6 @@ struct multiboot_drive_info
     multiboot_uint16_t drive_ports[];
 };
 
-typedef struct multiboot_drive_info multiboot_drive_info_t ;
+typedef struct multiboot_drive_info multiboot_drive_info_t;
 
-void print_mbinfo(struct multiboot_info *mbinfo, uint32_t view_flags);
+void print_mbinfo(struct multiboot_info *mbinfo, unsigned int view_flags);

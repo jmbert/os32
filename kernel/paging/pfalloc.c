@@ -1,4 +1,4 @@
-#include <arch-specific/page_alloc.h>
+#include <page_alloc.h>
 
 #include <info/link_info.h>
 #include <stdint.h>

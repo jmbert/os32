@@ -12,8 +12,8 @@ LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 AR = $(TARGETTOOL)-ar 
 
-CFLAGS += -Wall -Wpedantic
-CPPFLAGS += -I$(LIBINCLUDE) -I$(KERNELINCLUDE) -MD -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables
+CFLAGS += 
+CPPFLAGS += -I$(LIBINCLUDE) -I$(KERNELINCLUDE)
 
 
 ARFLAGS =
@@ -26,7 +26,7 @@ stdio/printf.c\
 string/memset.c\
 string/memcpy.c\
 string/strcmp.c\
-math/comp.c\
+math/comp.c
 
 OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))
 
@@ -45,17 +45,14 @@ install-libc:
 %.o: %.c
 	@printf "\e[$(MSG_COL)mCompiling $@ from $<\e[m\n"
 	$(CC) -c $(CFLAGS) $< -o $@ $(CPPFLAGS)
-	@printf "\e[$(MSG_COL)mCompiled $@\e[m\n"
 
 %.o: %.S
 	@printf "\e[$(MSG_COL)mCompiling $@ from $<\e[m\n"
 	$(CC) -c $(CFLAGS) $< -o $@ $(CPPFLAGS)
-	@printf "\e[$(MSG_COL)mCompiled $@\e[m\n"
 
 $(LIBC): $(OBJS)
 	@printf "\e[$(MSG_COL)mLinking $@ from $^\e[m\n"
 	$(AR) rcs $(ARFLAGS) -o $@ $^
-	@printf "\e[$(MSG_COL)mLinked $@\e[m\n"
 
 compile: $(OBJS)
 

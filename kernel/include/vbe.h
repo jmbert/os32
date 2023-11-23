@@ -4,14 +4,14 @@
 #include <stdint.h>
 
 struct VbeInfoBlock {
-   char     VbeSignature[4];         // == "VESA"
-   uint16_t VbeVersion;              // == 0x0300 for VBE 3.0
-   uint16_t OemStringPtr[2];         // isa vbeFarPtr
-   uint8_t  Capabilities[4];
-   uint16_t VideoModePtr[2];         // isa vbeFarPtr
-   uint16_t TotalMemory;             // as # of 64KB blocks
-   uint8_t  Reserved[492];
-}[[packed]];
+    uint8_t VESASignature[4];
+    uint16_t VESAVersion;
+    uint32_t OEMStringPtr;
+	uint8_t Capabilities[4];
+    uint32_t VideoModePtr;
+    uint16_t TotalMemory;
+    uint8_t Reserved[492];
+}__attribute__((packed));
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -49,6 +49,6 @@ struct vbe_mode_info_structure {
 	uint32_t off_screen_mem_off;
 	uint16_t off_screen_mem_size;	// size of memory in the framebuffer but not being displayed on the screen
 	uint8_t reserved1[206];
-}[[packed]];
+};
 
 #endif
