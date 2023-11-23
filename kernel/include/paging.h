@@ -13,6 +13,7 @@ extern vaddr paging_start;
 #define PAGE_SIZE 0x1000
 #define TABLE_LENGTH 0x400
 #define PAGE_MASK 0xfffff000
+#define PALIGN_ADDR(addr) ((paddr)addr & PAGE_MASK)
 
 #define PAGING_RESERVED_START paging_start
 
@@ -22,11 +23,12 @@ extern vaddr paging_start;
 
 #define INVLPG(addr) _invlpg(addr)
 #define SET_PDIR(addr) asm("mov %0, %%eax;mov %%eax, %%cr3" :: "m"(addr)) 
-#define GET_PDIR() ((paddr*)0xFFFFF000)
+#define GET_PDIR() ((ptable)0xFFFFF000)
 #define SET_PDE(index, value) (GET_PDIR())[index] = value
 #define GET_PDE(index) (GET_PDIR()[index])
 
-#define PALIGN_ADDR(addr) ((paddr)addr & PAGE_MASK)
+#define GET_PDIR_PHYS() (PALIGN_ADDR(GET_PDE(0x3ff)))
+
 
 extern void _invlpg(paddr addr);
 

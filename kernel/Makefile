@@ -52,7 +52,11 @@ graphics/graphics_swap.c\
 terminal/create_terminal.c\
 terminal/terminal_write_swap.c\
 bits/var/fs.c\
-colours/_convert_colour.c
+colours/_convert_colour.c\
+proc/new_process.c\
+proc/_initialise_pdir.c\
+proc/switch_process.c\
+bits/var/proc.c
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 
@@ -113,7 +117,6 @@ clean:
 	@-rm $(KERNELBIN)
 	@-rm -rf $(KERNELROOT)/isodir
 	@-rm $(KERNELROOT)/kernel
-	@-rm -rf $(KERNELROOT)/initramfs
 	@-rm $(KERNELROOT)/initramfs.img
 
 install-initramfs:
