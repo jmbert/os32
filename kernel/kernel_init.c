@@ -23,7 +23,7 @@
 
 vaddr paging_start;
 
-extern void kernel_main(multiboot_info_t *mbinfo, terminal_t term, font_t font);
+extern void kernel_main();
 
 void kernel_init(multiboot_info_t *mbinfo)
 {
@@ -37,7 +37,6 @@ void kernel_init(multiboot_info_t *mbinfo)
 
 	map_pages(FRAMEBUFFER_ADDRESS, mbinfo->framebuffer_addr, GRAPHICS_SIZE);
 
-	terminal_t term = create_terminal(0, 0, 0x1000);
 
     multiboot_module_t initramfs;
     for (unsigned int i = 0; i < mbinfo->mods_count; i++)
@@ -60,6 +59,8 @@ void kernel_init(multiboot_info_t *mbinfo)
         .c_width = 8,
         .chardata = fontdat,
     };
+
+	term_font = font;
 
 
     pid_t kmain = new_process((uword_t)kernel_main, PROC_MODE_KERNEL);

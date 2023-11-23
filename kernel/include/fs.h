@@ -34,12 +34,9 @@ typedef struct _FILE
 
 typedef struct file_descriptor_table_t
 {
-    _FILE *_table[MAX_FILE_DESCRIPTORS];
+    _FILE **_table;
     unsigned int _current_fd;
 }file_descriptor_table_t;
-
-// TODO: Global now, will become process-specific
-extern file_descriptor_table_t _global_fd_table;
 
 fd_t new_virtual_file(void *buffer, unsigned int size);
 
@@ -48,6 +45,8 @@ fd_t _add_new_file(_FILE *file);
 #define FILE_LENGTH(_file) ((_file)->buf - (_file)->base)
 #define FILE_LENGTH_LEFT(_file) ((_file)->size - FILE_LENGTH(_file))
 
-#define _GET_FILE(_fd) (_global_fd_table._table[(_fd)])
+file_descriptor_table_t *get_fdtable();
+
+#define _GET_FILE(_fd) (get_fdtable()->_table[(_fd)])
 
 #endif

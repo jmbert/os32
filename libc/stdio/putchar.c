@@ -20,5 +20,5 @@ int putc(FILE *stream, char c)
 
 int putchar(char c)
 {
-    putc(_GET_STDOUT(), c);
+    return putc(_GET_STDOUT(), c);
 }

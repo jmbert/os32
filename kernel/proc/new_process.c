@@ -8,6 +8,7 @@
 
 #include <debug/exec.h>
 
+
 pid_t new_process(uword_t start_eip, _process_type_e privilige)
 {
     _sstate_t sstate;
@@ -24,6 +25,7 @@ pid_t new_process(uword_t start_eip, _process_type_e privilige)
     mmap(proc_esp-_STACK_SIZE, _STACK_SIZE);
 
     /* Set up stack for return to the process */
+    
     proc_esp -= _REGISTER_SIZE; /* For EIP */
     *(uword_t*)proc_esp = start_eip;
     proc_esp -= _REGISTER_SIZE; /* For ESP */
@@ -40,12 +42,17 @@ pid_t new_process(uword_t start_eip, _process_type_e privilige)
 
     sstate._esp = proc_esp;
 
+    file_descriptor_table_t fdtab;
+    fdtab._current_fd = 0;
+    fdtab._table = (_FILE**)malloc(sizeof(_FILE*)*MAX_FILE_DESCRIPTORS);
+
     _process_t proc = 
     {
         .page_directory = pdir,
         .pid = next_pid,
         .privilige = privilige,
-        .stack_state = sstate
+        .stack_state = sstate,
+        .fd_lookup_table = fdtab,
     };
 
 

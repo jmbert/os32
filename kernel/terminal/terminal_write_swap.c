@@ -32,13 +32,15 @@ static void write_char(unsigned char c, unsigned int sx, unsigned int sy, font_t
     }
 }
 
-void terminal_write_swap(terminal_t terminal, font_t font)
+void terminal_write_swap(graphics_swap_buffer_t swap)
 {
-    
     FILE *stdout = _GET_STDOUT();
 
     unsigned int x = 0;
     unsigned int y = 0;
+
+    unsigned char draw = 0;
+
     for (unsigned int i = 0; i < FILE_LENGTH(stdout); i++ )
     {
         unsigned char c = stdout->base[i];
@@ -51,17 +53,18 @@ void terminal_write_swap(terminal_t terminal, font_t font)
         case '\n':
             x = 0;
             y++;
+            draw = 1;
             break;
         case '\t':
             unsigned int toAlign = 4 - (x % 4);
             x += toAlign;
             break;
         default:
-            write_char(c, x, y, font, terminal.swap.buffer, -1, 0);
+            write_char(c, x, y, term_font, swap.buffer, -1, 0);
             x++;
             break;
         }
     }
-    
-    
+
+    graphics_swap(swap);
 }

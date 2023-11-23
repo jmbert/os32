@@ -6,6 +6,7 @@
 
 #include <paging.h>
 #include <string.h>
+#include <fs.h>
 
 typedef unsigned long pid_t;
 
@@ -24,7 +25,10 @@ typedef struct
     ptable page_directory;
 
     _process_type_e privilige;
+
+    file_descriptor_table_t fd_lookup_table;
 }_process_t;
+
 
 extern _process_t *proc_table[MAX_PROCESSES];
 extern pid_t current_process;
@@ -39,6 +43,10 @@ extern pid_t next_pid;
 #define _LOAD_REGISTERS() __asm__ ("popa");
 
 ptable _initialise_pdir();
+
+pid_t getpid();
+
+_process_t *_proclookup(pid_t proc);
 
 int switch_process_nosave(pid_t proc);
 int switch_process(pid_t proc);

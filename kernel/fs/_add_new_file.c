@@ -2,8 +2,10 @@
 
 fd_t _add_new_file(_FILE *file)
 {
-    file->fd = _global_fd_table._current_fd;
-    _global_fd_table._table[_global_fd_table._current_fd] = file;
-    _global_fd_table._current_fd++;
+    file_descriptor_table_t *fdtable = get_fdtable();
+
+    file->fd = fdtable->_current_fd;
+    fdtable->_table[fdtable->_current_fd] = file;
+    fdtable->_current_fd++;
     return file->fd;
 }

@@ -3,15 +3,23 @@
 
 #include <sys/cdefs.h>
 #include <stdarg.h>
-#include <fs.h>
 #include <bits/io/stdpipes.h>
 
+
+#ifdef _IN_KERNEL
+#include <fs.h>
+#include <terminal.h>
+#define WRITE_SWAP() terminal_write_swap() 
+
+#endif
 
 #define EOF -1
 
 #define MAX_PRINTF_LIMIT 0x1000
 
 typedef _FILE FILE;
+
+
 
 int putchar(char c);
 

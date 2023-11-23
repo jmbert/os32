@@ -1,3 +1,6 @@
+#include <sys/cdefs.h>
+
+#ifdef _IN_KERNEL
 #include <fs.h>
 
 #ifndef __STDIN
@@ -22,4 +25,6 @@
 
 #ifndef _GET_STDERR
 #define _GET_STDERR() _GET_FILE(__STDERR)
+#endif
+
 #endif
