@@ -14,4 +14,9 @@ int memcmp(const void *s1, const void *s2, size_t n);
 
 int strcmp(char *str1, char *str2);
 
+unsigned int strlen(char *str);
+
+
+char* strtok(char* s, char* delm);
+
 #endif

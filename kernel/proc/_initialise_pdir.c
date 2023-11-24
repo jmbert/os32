@@ -29,3 +29,18 @@ ptable _initialise_pdir()
 
     return (ptable)pdir_phys;
 }
+
+ptable _initialise_pdir_fork()
+{
+    paddr pdir_phys = pframe_alloc();
+    ptable pdir = (ptable)(pdir_phys + KERNEL_OFFSET);
+
+    ptable current_pdir = GET_PDIR();
+
+    memcpy(pdir, current_pdir, (TABLE_LENGTH-1)*4);
+
+    /* Finally, we recursively map the page directory */
+    pdir[TABLE_LENGTH-1] = (paddr)pdir_phys | 0x3;
+
+    return (ptable)pdir_phys;
+}

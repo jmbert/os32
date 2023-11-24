@@ -20,6 +20,7 @@ int switch_process_nosave(pid_t proc)
     _LOAD_STACK(process);
     _LOAD_REGISTERS();
 
+    current_process = getpid();
     /* Now in new process */
 
     return 0;
@@ -46,6 +47,8 @@ int switch_process(pid_t proc)
     /* Get new stack, with registers off of it */
     _LOAD_STACK(process);
     _LOAD_REGISTERS();
+
+    current_process = getpid();
 
     /* Now in new process */
 

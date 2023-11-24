@@ -7,6 +7,8 @@ KERNELINCLUDE = $(KERNELROOT)/include
 
 SYSROOT=$(LIBROOT)/../sysroot
 
+TARGETTOOL?=i686-elf
+
 CC = $(TARGETTOOL)-gcc
 LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
@@ -26,11 +28,13 @@ stdio/printf.c\
 string/memset.c\
 string/memcpy.c\
 string/strcmp.c\
+string/strlen.c\
+string/strtok.c\
 math/comp.c
 
 OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))
 
-LIBC=libc.a
+LIBC=kernel_libc.a
 
 
 ERRLOG=/dev/null

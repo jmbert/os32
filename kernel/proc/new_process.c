@@ -9,15 +9,14 @@
 #include <debug/exec.h>
 
 
-pid_t new_process(uword_t start_eip, _process_type_e privilige)
+pid_t new_process(uword_t start_eip, _process_type_e privilege)
 {
     _sstate_t sstate;
 
-
     ptable pdir = _initialise_pdir();
 
-    ptable kernel_pdir = GET_PDIR_PHYS();
 
+    ptable old_pdir = GET_PDIR_PHYS();
     /* Easier to work inside the process page directory */
     SET_PDIR(pdir);
 
@@ -38,7 +37,11 @@ pid_t new_process(uword_t start_eip, _process_type_e privilige)
 
 
     /* Get our old pages back */
-    SET_PDIR(kernel_pdir);
+    SET_PDIR(old_pdir);
+    if (privilege == PROC_MODE_USER)
+    {
+        HALT();
+    }
 
     sstate._esp = proc_esp;
 
@@ -50,7 +53,8 @@ pid_t new_process(uword_t start_eip, _process_type_e privilige)
     {
         .page_directory = pdir,
         .pid = next_pid,
-        .privilige = privilige,
+        .parent = getpid(),
+        .privilege = privilege,
         .stack_state = sstate,
         .fd_lookup_table = fdtab,
     };
@@ -60,6 +64,7 @@ pid_t new_process(uword_t start_eip, _process_type_e privilige)
 
     _process_t *entry = (_process_t*)malloc(sizeof(_process_t));
     *entry = proc;
+
     proc_table[proc.pid] = entry;
 
     return proc.pid;

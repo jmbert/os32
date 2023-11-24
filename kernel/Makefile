@@ -38,9 +38,11 @@ memory/memory.c\
 memory/mman_init.c\
 memory/log.c\
 fs/_add_new_file.c\
-fs/new_virtual_file.c\
+fs/_file_from_buffer.c\
 fs/tar/lookup.c\
 fs/tar/helpers.c\
+fs/_new_fs.c\
+fs/parse_file_path.c\
 paging/mmap.c\
 paging/map.c\
 paging/pfalloc.c\
@@ -58,6 +60,9 @@ proc/switch_process.c\
 bits/var/proc.c\
 proc/getpid.c\
 proc/_proclookup.c\
+proc/exit.c\
+proc/fork.c\
+proc/print_procs.c\
 fs/get_fdtable.c\
 bits/var/terminal.c
 
@@ -70,13 +75,11 @@ KERNELBIN=kernel.bin
 ERRLOG=/dev/null
 MSG_COL=1;32
 
-SUBDIRS = $(patsubst %,$(BUILD)/%,$(shell tree -dfi --noreport --gitfile=$(KERNELROOT)/../.gitignore $(KERNELROOT)))
+SUBDIRS = $(patsubst %,$(BUILD)/%,$(shell tree -dfi -I build --noreport --gitfile=$(KERNELROOT)/../.gitignore $(KERNELROOT)))
 
 
 kernel-all: compile link install-initramfs iso
 
-
-install-libc: 
 
 $(BUILD)/%.o: %.c
 	@printf "\e[$(MSG_COL)mCompiling $@ from $<\e[m\n"
@@ -95,7 +98,7 @@ create-sysroot:
 	@-mkdir $(BUILD)
 	@-mkdir $(SUBDIRS)
 	@-mkdir  $(SYSROOT)
-	@rsync -r $(KERNELINCLUDE) $(SYSROOT)/
+	@cp -Lrp $(KERNELINCLUDE) $(SYSROOT)/
 	@cp -Lrp $(LIBCINCLUDE)/ $(SYSROOTLIBCINCLUDE)/
 	@-mkdir $(SYSROOT)/boot 
 	@-mkdir $(SYSROOTLIB)
@@ -125,7 +128,7 @@ clean:
 install-initramfs:
 	@-mkdir initramfs
 	@-mkdir -p isodir/boot/grub
-	@-tar -cH ustar  $(KERNELROOT)/initramfs -f $(KERNELROOT)/initramfs.img
+	@-tar -cH ustar -C $(KERNELROOT)/initramfs . -f $(KERNELROOT)/initramfs.img
 	@-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/isodir/boot/
 	@-cp -Lp $(KERNELROOT)/initramfs.img $(KERNELROOT)/../sysroot/boot/
 	
