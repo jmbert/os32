@@ -33,12 +33,6 @@ void *malloc(size_t len)
     arena_current = (void*)(((char*)arena_current) + len);
     size_left -= len;
 
-    char *_ptr2 = (char*)_ptr;
-    for (int i = 0;i < len; i++, _ptr2++)
-    {
-        *_ptr2 = 0;
-    }
-
 
     return _ptr;
 

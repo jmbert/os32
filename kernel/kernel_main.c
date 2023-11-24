@@ -15,7 +15,7 @@
 void kernel_main()
 {
 
-    print_processes();
+    print_maps();
 
     HALT();
 }
