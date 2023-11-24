@@ -38,6 +38,7 @@ extern interrupt_gate_t idt[256];
 
 void idt_init();
 
-void register_interrupt(void *_ptr, unsigned int index, unsigned char flags);
+
+void register_interrupt(void *(_ptr)(), unsigned int index, unsigned char flags);
 
 #endif

@@ -60,10 +60,6 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
         .stack_state = sstate,
         .fd_lookup_table = fdtab,
     };
-    
-
-
-
 
     next_pid++;
 

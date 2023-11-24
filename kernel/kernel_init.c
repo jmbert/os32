@@ -66,6 +66,7 @@ void kernel_init(multiboot_info_t *mbinfo)
         .chardata = fontdata,
     };
 
+
     register_interrupt(div0_handler_trap, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
     register_interrupt(double_fault_handler_trap, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
 

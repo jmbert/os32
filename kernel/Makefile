@@ -69,6 +69,8 @@ idt/idt_init.c\
 idt/register_interrupt.c\
 interrupts/div0_handler.c\
 interrupts/double_fault_handler.c\
+tss/tss_init.c\
+tss/load_tss.S\
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 

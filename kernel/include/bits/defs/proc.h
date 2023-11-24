@@ -10,9 +10,12 @@
 #define _STACK_POSITION (KERNEL_OFFSET - _STACK_OFFSET)
 #endif
 
-
 #ifndef _STACK_SIZE
 #define _STACK_SIZE 0x4000
+#endif
+
+#ifndef _KERNEL_STACK_POSITION
+#define _KERNEL_STACK_POSITION 0xcdfffffe
 #endif
 
 #ifndef STD_STREAM_SIZE 

@@ -1,7 +1,7 @@
 #include <idt.h>
 #include <gdt.h>
 
-void register_interrupt(void *_ptr, unsigned int index, unsigned char flags)
+void register_interrupt(void *(_ptr)(), unsigned int index, unsigned char flags)
 {
     interrupt_gate_t gate;
     gate._ptr_low = (unsigned int)_ptr;

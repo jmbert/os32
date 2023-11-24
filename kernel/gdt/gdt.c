@@ -1,8 +1,9 @@
 #include <gdt.h>
+#include <tss.h>
 
 segdesc_t gdt[256];
 
-static void new_segment_descriptor(unsigned int base, unsigned int limit, unsigned char flags, unsigned char access, unsigned int index)
+void new_segment_descriptor(unsigned int base, unsigned int limit, unsigned char flags, unsigned char access, unsigned int index)
 {
     segdesc_t desc;
 
@@ -26,13 +27,15 @@ void gdt_init()
     new_segment_descriptor(0, 0xFFFFF, 0xC, 0x92, 2);
     new_segment_descriptor(0, 0xFFFFF, 0xC, 0xFA, 3);
     new_segment_descriptor(0, 0xFFFFF, 0xC, 0xF2, 4);
+    tss_init();
 
     unsigned int gdt_off = (unsigned int)(&gdt);
 
     gdtr_t gdtr;
     gdtr._ptr = gdt_off;
-    gdtr.size = sizeof(segdesc_t)*5;
+    gdtr.size = sizeof(segdesc_t)*6;
 
     asm("lgdt %0" :: "m"(gdtr));
     reloadSegments();
+    load_tss();
 }

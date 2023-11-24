@@ -1,6 +1,9 @@
 #ifndef _INT_H
 #define _INT_H
 
+#include <tss.h>
+#include <gdt.h>
+
 typedef struct
 {
     unsigned int eflags;
