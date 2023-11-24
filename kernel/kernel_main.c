@@ -14,7 +14,6 @@
 
 void kernel_main()
 {
-    print_processes();
 
     HALT();
 }

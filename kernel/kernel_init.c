@@ -21,6 +21,8 @@
 #include <proc.h>
 #include <font.h>
 #include <gdt.h>
+#include <idt.h>
+#include <interrupts.h>
 
 vaddr paging_start;
 
@@ -29,6 +31,7 @@ extern void kernel_main();
 void kernel_init(multiboot_info_t *mbinfo)
 {
     gdt_init();
+    idt_init();
 
 	mman_init(mbinfo);
 
@@ -62,6 +65,9 @@ void kernel_init(multiboot_info_t *mbinfo)
         .c_width = 8,
         .chardata = fontdata,
     };
+
+    register_interrupt(div0_handler_trap, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
+    register_interrupt(double_fault_handler_trap, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
 
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 

@@ -18,6 +18,14 @@ typedef struct [[gnu::packed]]
     unsigned char base_high;
 }segdesc_t;
 
+typedef enum
+{
+    GDT_KERNEL_CODE = 0x8,
+    GDT_KERNEL_DATA = 0x10,
+    GDT_USER_CODE = 0x18,
+    GDT_USER_DATA = 0x20,
+}_gdt_segment_selectors_e;
+
 void gdt_init();
 
 extern segdesc_t gdt[256];

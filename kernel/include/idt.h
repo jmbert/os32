@@ -1,14 +1,14 @@
 #ifndef _IDT_H
 #define _IDT_H
 
-typedef struct 
+typedef struct [[gnu::packed]]
 {
     unsigned short size;
     unsigned int _ptr;
 }idtr_t;
 
 
-typedef struct
+typedef struct [[gnu::packed]]
 {
     unsigned short _ptr_low;
     unsigned short segment_selector;
@@ -19,16 +19,17 @@ typedef struct
 
 typedef enum
 {
-    IDT_GATE_PRESENT,
-    IDT_GATE_TYPE_TASK,
+    IDT_GATE_PRESENT = 1 << 7,
+
+    IDT_GATE_TYPE_TASK = 0x5,
     IDT_GATE_TYPE_INT16,
     IDT_GATE_TYPE_TRAP16,
-    
-    IDT_GATE_TYPE_INT32,
+
+    IDT_GATE_TYPE_INT32 = 0xE,
     IDT_GATE_TYPE_TRAP32,
 
-    IDT_GATE_PRIVILEGE_KERNEL = 0,
-    IDT_GATE_PRIVILEGE_USER = 3,
+    IDT_GATE_PRIVILEGE_KERNEL = 0 << 4,
+    IDT_GATE_PRIVILEGE_USER = 3 << 4,
 
 }_interrupt_flags_e;
 
@@ -37,6 +38,6 @@ extern interrupt_gate_t idt[256];
 
 void idt_init();
 
-void register_interrupt(unsigned int _ptr, unsigned int index, unsigned char flags);
+void register_interrupt(void *_ptr, unsigned int index, unsigned char flags);
 
 #endif
