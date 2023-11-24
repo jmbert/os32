@@ -20,7 +20,7 @@ CC = $(TARGETTOOL)-gcc
 LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 
-CFLAGS += 
+CFLAGS += -mgeneral-regs-only
 CPPFLAGS+=-I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE)
 
 LDSCRIPT=linker.ld
@@ -67,6 +67,7 @@ gdt/gdt.c\
 gdt/load_gdt.S\
 idt/idt_init.c\
 idt/register_interrupt.c\
+interrupts/div0_handler.c\
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 

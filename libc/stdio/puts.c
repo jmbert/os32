@@ -19,6 +19,7 @@ int puts(const char *str)
         int err = putchar(*str);
         if (err) {return err;}
     }
+    terminal_write_swap();
 
     return 0;
 }

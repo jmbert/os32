@@ -32,8 +32,14 @@ static void write_char(unsigned char c, unsigned int sx, unsigned int sy, font_t
     }
 }
 
-void terminal_write_swap(graphics_swap_buffer_t swap)
+void terminal_write_swap()
 {
+    graphics_swap_buffer_t swap = {
+        .offset = 0,
+        .size = GRAPHICS_SIZE,
+        .buffer = (unsigned char *)malloc(sizeof(unsigned char)*GRAPHICS_SIZE),
+    };
+
     FILE *stdout = _GET_STDOUT();
 
     unsigned int x = 0;

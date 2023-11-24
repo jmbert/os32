@@ -2,15 +2,13 @@
 #define _GDT_H
 
 
-struct _gdtr
+typedef struct [[gnu::packed]]
 {
     unsigned short size;
     unsigned int _ptr;
-}__attribute__((packed));
+}gdtr_t;
 
-typedef struct _gdtr gdtr_t;
-
-struct _segdesc
+typedef struct [[gnu::packed]]
 {
     unsigned short limit_low;
     unsigned short base_low;
@@ -18,9 +16,7 @@ struct _segdesc
     unsigned char access;
     unsigned char limit_high_flags;
     unsigned char base_high;
-}__attribute__((packed));
-
-typedef struct _segdesc segdesc_t;
+}segdesc_t;
 
 void gdt_init();
 

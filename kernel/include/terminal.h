@@ -7,6 +7,6 @@
 
 extern font_t term_font;
 
-void terminal_write_swap(graphics_swap_buffer_t swap);
+void terminal_write_swap();
 
 #endif

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <terminal.h>
+
 // A utility function to reverse a string
 void reverse(char str[], int length)
 {
