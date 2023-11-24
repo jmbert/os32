@@ -65,6 +65,8 @@ fs/get_fdtable.c\
 bits/var/terminal.c\
 gdt/gdt.c\
 gdt/load_gdt.S\
+idt/idt_init.c\
+idt/register_interrupt.c\
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 
