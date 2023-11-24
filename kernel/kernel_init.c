@@ -50,8 +50,15 @@ void kernel_init(multiboot_info_t *mbinfo)
         }
     }
 
-    _new_fs_from_mem((void*)(initramfs.mod_start + KERNEL_OFFSET));
-    HALT();
+    unsigned int initramfsroot = initramfs.mod_start + KERNEL_OFFSET;
+    unsigned char *fontdata = (unsigned char *)DATA_FROM_HEADER(tar_lookup(initramfsroot, "./fonts/font.bin"));
+
+    term_font = (font_t)
+    {
+        .c_height = 14,
+        .c_width = 8,
+        .chardata = fontdata,
+    };
 
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 

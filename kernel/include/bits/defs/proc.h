@@ -14,3 +14,7 @@
 #ifndef _STACK_SIZE
 #define _STACK_SIZE 0x4000
 #endif
+
+#ifndef STD_STREAM_SIZE 
+#define STD_STREAM_SIZE 0x1000
+#endif

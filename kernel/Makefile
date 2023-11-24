@@ -26,7 +26,7 @@ CPPFLAGS+=-I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE)
 LDSCRIPT=linker.ld
 
 LDFLAGS = -T$(LDSCRIPT) -nostdlib -melf_i386 --sysroot=$(SYSROOT)
-LDPFLAGS = -lc -lgcc 
+LDPFLAGS = -lkernel -lgcc 
 
 SRCS +=\
 kernel_init.c\
@@ -38,11 +38,9 @@ memory/memory.c\
 memory/mman_init.c\
 memory/log.c\
 fs/_add_new_file.c\
-fs/_file_from_buffer.c\
+fs/new_virtual_file.c\
 fs/tar/lookup.c\
 fs/tar/helpers.c\
-fs/_new_fs.c\
-fs/parse_file_path.c\
 paging/mmap.c\
 paging/map.c\
 paging/pfalloc.c\

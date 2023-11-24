@@ -34,7 +34,7 @@ math/comp.c
 
 OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))
 
-LIBC=kernel_libc.a
+LIBC=libkernel.a
 
 
 ERRLOG=/dev/null

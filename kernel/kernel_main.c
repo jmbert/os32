@@ -13,11 +13,6 @@
 
 #include <proc.h>
 
-void test()
-{
-    exit();
-}
-
 void kernel_main()
 {
 
@@ -25,15 +20,20 @@ void kernel_main()
     char *stdinBuf = (char*)malloc(sizeof(char)*0x1000);
     char *stderrBuf = (char*)malloc(sizeof(char)*0x1000);
 
-    _file_from_buffer(stdinBuf, 0x1000);
-    _file_from_buffer(stdoutBuf, 0x1000);
-    _file_from_buffer(stderrBuf, 0x1000);
+    new_virtual_file(stdinBuf, 0x1000);
+    new_virtual_file(stdoutBuf, 0x1000);
+    new_virtual_file(stderrBuf, 0x1000);
 
     graphics_swap_buffer_t swap = {
         .offset = 0,
         .size = GRAPHICS_SIZE,
         .buffer = (unsigned char *)malloc(sizeof(unsigned char)*GRAPHICS_SIZE),
     };
+
+    pid_t test = fork();
+
+    print_processes();
+    terminal_write_swap(swap);
 
     HALT();
 }

@@ -11,6 +11,8 @@
 
 pid_t new_process(uword_t start_eip, _process_type_e privilege)
 {
+    
+
     _sstate_t sstate;
 
     ptable pdir = _initialise_pdir();
@@ -58,6 +60,9 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
         .stack_state = sstate,
         .fd_lookup_table = fdtab,
     };
+    
+
+
 
 
     next_pid++;
@@ -66,6 +71,22 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
     *entry = proc;
 
     proc_table[proc.pid] = entry;
+
+
+    char *stdoutBuf = (char*)malloc(sizeof(char)*STD_STREAM_SIZE);
+    char *stdinBuf = (char*)malloc(sizeof(char)*STD_STREAM_SIZE);
+    char *stderrBuf = (char*)malloc(sizeof(char)*STD_STREAM_SIZE);
+
+    /* Setup std streams */
+
+    pid_t old_process = current_process;
+    current_process = proc.pid;
+
+    new_virtual_file(stdinBuf, STD_STREAM_SIZE);
+    new_virtual_file(stdoutBuf, STD_STREAM_SIZE);
+    new_virtual_file(stderrBuf, STD_STREAM_SIZE);
+
+    current_process = old_process;
 
     return proc.pid;
 }

@@ -1,7 +1,7 @@
 #include <fs/tar.h>
 #include <stdio.h>
 
-int decodeOctal(unsigned char *str, int size) 
+int decodeOctal(char *str, int size) 
 {
     int n = 0;
     unsigned char *c = str;

@@ -47,7 +47,7 @@ enum
     TAR_PIPE,
 };
 
-int decodeOctal(unsigned char *str, int size);
+int decodeOctal(char *str, int size);
 
 struct tar_header *tar_lookup(uint32_t archive, char *fileName);
 

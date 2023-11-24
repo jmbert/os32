@@ -17,7 +17,7 @@ pid_t fork()
 
     _process_t *parent = _proclookup(getpid());
 
-    _process_t proc = 
+    _process_t proc = (_process_t)
     {
         .page_directory = pdir,
         .pid = next_pid,
