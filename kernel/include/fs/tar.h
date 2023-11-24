@@ -7,7 +7,7 @@
 
 #define DATA_FROM_HEADER(addr) ((uint32_t)(addr) + 512)
 
-struct tar_header
+typedef struct tar_header
 {
     char name[100];
     uint8_t mode[8];
@@ -26,14 +26,12 @@ struct tar_header
     uint8_t devMinor[8];
 
     char namePrefix[32];
-};
+}tar_header_t;
 
 struct tar_file
 {
-    struct tar_header *header;
+    tar_header_t *header;
     void *data;
-
-    
 };
 
 enum
@@ -49,6 +47,7 @@ enum
 
 int decodeOctal(char *str, int size);
 
-struct tar_header *tar_lookup(uint32_t archive, char *fileName);
+tar_header_t *tar_lookup(uint32_t archive, char *fileName);
+char **tar_list_files(uint32_t archive);
 
 #endif

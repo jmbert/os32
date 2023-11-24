@@ -62,7 +62,9 @@ proc/exit.c\
 proc/fork.c\
 proc/print_procs.c\
 fs/get_fdtable.c\
-bits/var/terminal.c
+bits/var/terminal.c\
+gdt/gdt.c\
+gdt/load_gdt.S\
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 

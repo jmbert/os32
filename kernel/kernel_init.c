@@ -20,6 +20,7 @@
 #include <terminal.h>
 #include <proc.h>
 #include <font.h>
+#include <gdt.h>
 
 vaddr paging_start;
 
@@ -27,6 +28,8 @@ extern void kernel_main();
 
 void kernel_init(multiboot_info_t *mbinfo)
 {
+    gdt_init();
+
 	mman_init(mbinfo);
 
 	paging_init();

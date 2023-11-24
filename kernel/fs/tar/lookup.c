@@ -4,9 +4,9 @@
 
 #include <debug/exec.h>
 
-struct tar_header *tar_lookup(uint32_t archive, char *fileName)
+tar_header_t *tar_lookup(uint32_t archive, char *fileName)
 {
-    struct tar_header *file = (struct tar_header*)archive;
+    tar_header_t *file = (tar_header_t*)archive;
     for (;memcmp(file->indicator, "ustar", 5) == 0;)
     {
         if (strcmp(file->name, fileName) == 0)
@@ -16,14 +16,14 @@ struct tar_header *tar_lookup(uint32_t archive, char *fileName)
 
         uint64_t filesize = decodeOctal(file->sizeOct, 11);
         archive += (((filesize + 511) / 512) + 1) * 512;
-        file = (struct tar_header*)archive;
+        file = (tar_header_t*)archive;
     }
     return NULL;
 }
 
-char **tar_list_subdirs(uint32_t archive, uint8_t *fileName)
+char **tar_list_files(uint32_t archive)
 {
-    struct tar_header *dir = tar_lookup(archive, fileName);
+    tar_header_t *dir = (tar_header_t*)archive;
     if (dir == NULL)
     {
         return NULL;
@@ -47,7 +47,7 @@ char **tar_list_subdirs(uint32_t archive, uint8_t *fileName)
 
         uint64_t filesize = decodeOctal(dir->sizeOct, 11);
         archive += (((filesize + 511) / 512) + 1) * 512;
-        dir = (struct tar_header*)archive;
+        dir = (tar_header_t*)archive;
     }
     names[i] = NULL;
 
