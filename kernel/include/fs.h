@@ -31,7 +31,6 @@ typedef struct _FILE
     unsigned int size;
 }_FILE;
 
-
 typedef struct file_descriptor_table_t
 {
     _FILE **_table;

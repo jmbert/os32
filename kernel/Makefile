@@ -41,6 +41,7 @@ fs/_add_new_file.c\
 fs/new_virtual_file.c\
 fs/tar/lookup.c\
 fs/tar/helpers.c\
+fs/tar/to_vfs.c\
 paging/mmap.c\
 paging/map.c\
 paging/pfalloc.c\

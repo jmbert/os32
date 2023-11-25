@@ -1,18 +1,22 @@
-.PHONY: clean sysroot kernel libc all
+.PHONY: clean sysroot kernel drivers libc all
 
 CFLAGS += -fno-stack-protector -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables -Wall -Wpedantic -std=gnu23
 CPPFLAGS += -MD 
 
 export CFLAGS CPPFLAGS
 
-all: libc kernel
+all: libc drivers kernel
 
 clean:
 	$(MAKE) -C kernel clean
 	$(MAKE) -C libc clean
+	$(MAKE) -C drivers clean
 	-rm initramfs.img
 	-rm os.iso
 
+drivers:
+	$(MAKE) -C drivers build_drivers
+	$(MAKE) -C drivers install_drivers
 
 kernel: sysroot
 	$(MAKE) -C kernel kernel-all

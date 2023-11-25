@@ -155,7 +155,6 @@ int vfprintf(FILE *stream, const char *fmt, va_list args)
 
 
     err = fputs(stream, str);
-    free(str);
     return err;
 }
 
@@ -176,7 +175,6 @@ int vprintf(const char *fmt, va_list args)
 
 
     err = puts(str);
-    free(str);
     return err;
 }
 

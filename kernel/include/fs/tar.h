@@ -2,6 +2,7 @@
 #define _FS_TAR_H
 
 #include <stdint.h>
+#include <vfs.h>
 
 #define MAX_DIR_ITEMS 0x200
 
@@ -49,5 +50,7 @@ int decodeOctal(char *str, int size);
 
 tar_header_t *tar_lookup(uint32_t archive, char *fileName);
 char **tar_list_files(uint32_t archive);
+
+vfs_t convert_to_vfs(unsigned int archive);
 
 #endif

@@ -30,6 +30,7 @@ string/memcpy.c\
 string/strcmp.c\
 string/strlen.c\
 string/strtok.c\
+string/strrchr.c\
 math/comp.c
 
 OBJS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SRCS)))

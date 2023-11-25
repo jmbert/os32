@@ -19,18 +19,14 @@ void *malloc(size_t len)
         return NULL;
     }
 
-    struct allocheader alloc_header = (struct allocheader)
-    {
-        MALLOC_KERNEL,
-        len,
-    };
+    struct allocheader *alloc_header = (struct allocheader*)arena_current;
+    alloc_header->alloc_length = len;
+    alloc_header->tag = MALLOC_KERNEL;
 
-
-    *(struct allocheader*)arena_current = alloc_header;
     size_left -= sizeof(struct allocheader);
     arena_current = (void*)(((char*)arena_current) + sizeof(struct allocheader));
     void *_ptr = arena_current;
-    arena_current = (void*)(((char*)arena_current) + len);
+    arena_current = (void*)(((char*)arena_current) + len + sizeof(struct allocheader));
     size_left -= len;
 
 

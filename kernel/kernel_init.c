@@ -28,10 +28,6 @@ vaddr paging_start;
 
 extern void kernel_main();
 
-void user_init()
-{
-    HALT();
-}
 
 void kernel_init(multiboot_info_t *mbinfo)
 {
@@ -62,6 +58,7 @@ void kernel_init(multiboot_info_t *mbinfo)
     }
 
     unsigned int initramfsroot = initramfs.mod_start + KERNEL_OFFSET;
+    file_system = convert_to_vfs(initramfsroot);
     unsigned char *fontdata = (unsigned char *)DATA_FROM_HEADER(tar_lookup(initramfsroot, "./fonts/font.bin"));
 
     term_font = (font_t)
@@ -71,7 +68,6 @@ void kernel_init(multiboot_info_t *mbinfo)
         .chardata = fontdata,
     };
 
-
     register_interrupt(div0_handler, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
     register_interrupt(double_fault_handler, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
     register_interrupt(page_fault_handler, EXCEPTION_PAGE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
@@ -80,6 +76,6 @@ void kernel_init(multiboot_info_t *mbinfo)
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 
     pid_t kmain = new_process((uword_t)kernel_main, PROC_MODE_KERNEL);
-    pid_t umain = new_process((uword_t)user_init, PROC_MODE_USER);
+    pid_t umain = new_process((uword_t)0, PROC_MODE_USER);
     switch_process_nosave(kmain);
 }
