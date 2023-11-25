@@ -11,8 +11,6 @@
 
 pid_t new_process(uword_t start_eip, _process_type_e privilege)
 {
-    
-
     _sstate_t sstate;
 
     ptable pdir = _initialise_pdir();
@@ -40,10 +38,6 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
 
     /* Get our old pages back */
     SET_PDIR(old_pdir);
-    if (privilege == PROC_MODE_USER)
-    {
-        HALT();
-    }
 
     sstate._esp = proc_esp;
 

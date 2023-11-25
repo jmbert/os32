@@ -73,5 +73,6 @@ void kernel_init(multiboot_info_t *mbinfo)
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 
     pid_t kmain = new_process((uword_t)kernel_main, PROC_MODE_KERNEL);
+    pid_t umain = new_process(0, PROC_MODE_USER);
     switch_process_nosave(kmain);
 }

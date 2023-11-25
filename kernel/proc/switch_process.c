@@ -1,7 +1,7 @@
 #include <proc.h>
 
 #include <stddef.h>
-
+#include <gdt.h>
 #include <debug/exec.h>
 
 int switch_process_nosave(pid_t proc)
@@ -50,7 +50,13 @@ int switch_process(pid_t proc)
 
     current_process = getpid();
 
-    /* Now in new process */
+    unsigned int new_code = (process->privilege == PROC_MODE_KERNEL) ? GDT_USER_CODE : GDT_KERNEL_CODE;
+    unsigned int new_data = (process->privilege == PROC_MODE_KERNEL) ? GDT_USER_DATA : GDT_KERNEL_DATA;
+
+    /* Now to change to ring 3 */
+    unsigned int ret = __builtin_return_address(0);
+
+    ring_switch(new_code, new_data, ret);
 
     return 0;
 }

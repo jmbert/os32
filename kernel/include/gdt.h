@@ -1,6 +1,7 @@
 #ifndef _GDT_H
 #define _GDT_H
 
+#ifndef __ASSEMBLER__
 
 typedef struct [[gnu::packed]]
 {
@@ -31,5 +32,15 @@ void gdt_init();
 void new_segment_descriptor(unsigned int base, unsigned int limit, unsigned char flags, unsigned char access, unsigned int index);
 
 extern segdesc_t gdt[256];
+
+#else
+
+#define GDT_KERNEL_CODE 0x8
+#define GDT_KERNEL_DATA 0x10
+#define GDT_USER_CODE 0x18
+#define GDT_USER_DATA 0x20
+#define GDT_TSS 0x28
+
+#endif
 
 #endif

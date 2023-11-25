@@ -61,4 +61,6 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege);
 
 void print_processes();
 
+extern void ring_switch(unsigned int _code_segment, unsigned int _data_segment, unsigned int _ret);
+
 #endif
