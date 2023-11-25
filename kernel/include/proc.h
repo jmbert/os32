@@ -7,6 +7,7 @@
 #include <paging.h>
 #include <string.h>
 #include <fs.h>
+#include <graphics.h>
 
 typedef unsigned long pid_t;
 
@@ -28,6 +29,8 @@ typedef struct
     _process_type_e privilege;
 
     file_descriptor_table_t fd_lookup_table;
+
+    graphics_swap_buffer_t swap_buf;
 }_process_t;
 
 extern _process_t *proc_table[MAX_PROCESSES];

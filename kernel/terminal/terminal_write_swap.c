@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <colour.h>
 #include <debug/exec.h>
+#include <proc.h>
 
 static void set_colour(unsigned int x, unsigned int y, colour_t colour, unsigned char *swapbuffer)
 {
@@ -34,19 +35,8 @@ static void write_char(unsigned char c, unsigned int sx, unsigned int sy, font_t
 
 void terminal_write_swap()
 {
-    static graphics_swap_buffer_t swap = {
-        .offset = 0,
-        .size = 0,
-        .buffer = NULL,
-    };
-    if (swap.size == 0)
-    {
-        swap.size = GRAPHICS_SIZE;
-    }
-    if (swap.buffer == NULL)
-    {
-        swap.buffer = (unsigned char *)malloc(sizeof(unsigned char)*GRAPHICS_SIZE);
-    }
+
+    graphics_swap_buffer_t swap = _proclookup(getpid())->swap_buf;
 
     FILE *stdout = _GET_STDOUT();
 

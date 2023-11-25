@@ -25,6 +25,7 @@ pid_t fork()
         .privilege = parent->privilege,
         .stack_state = parent->stack_state,
         .fd_lookup_table = parent->fd_lookup_table,
+        .swap_buf = parent->swap_buf,
     };
 
     next_pid++;

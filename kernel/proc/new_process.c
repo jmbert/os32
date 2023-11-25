@@ -76,6 +76,14 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
     new_virtual_file(stdoutBuf, STD_STREAM_SIZE);
     new_virtual_file(stderrBuf, STD_STREAM_SIZE);
 
+    /* Set up swap buffer */
+    _proclookup(getpid())->swap_buf = (graphics_swap_buffer_t)
+    {
+        .offset = 0,
+        .size = GRAPHICS_SIZE,
+        .buffer = (unsigned char*)malloc(sizeof(unsigned char)*GRAPHICS_SIZE),
+    };
+
     current_process = old_process;
 
     return proc.pid;
