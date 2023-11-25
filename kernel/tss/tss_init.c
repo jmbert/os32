@@ -8,7 +8,7 @@ tss_entry_t tss;
 void tss_init()
 {
     tss.ss0 = GDT_KERNEL_DATA;
-    mmap(_KERNEL_STACK_POSITION - _STACK_SIZE, _STACK_SIZE);
+    mmap(_KERNEL_STACK_POSITION - _STACK_SIZE, _STACK_SIZE, PAGE_PRESENT | PAGE_WRITABLE);
     tss.esp0 = _KERNEL_STACK_POSITION;
     tss.iomap_base = sizeof(tss);
 

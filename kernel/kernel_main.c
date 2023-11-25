@@ -16,5 +16,7 @@ void kernel_main()
 {
     print_processes();
 
+    switch_process(1);
+
     HALT();
 }

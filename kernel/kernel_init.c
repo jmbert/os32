@@ -28,6 +28,11 @@ vaddr paging_start;
 
 extern void kernel_main();
 
+void user_init()
+{
+    HALT();
+}
+
 void kernel_init(multiboot_info_t *mbinfo)
 {
     gdt_init();
@@ -37,11 +42,11 @@ void kernel_init(multiboot_info_t *mbinfo)
 
 	paging_init();
 
-	mmap(ARENA_START, ARENA_SIZE);
+	mmap(ARENA_START, ARENA_SIZE, PAGE_WRITABLE);
 
 	initialise_graphics_info(mbinfo);
 
-	map_pages(FRAMEBUFFER_ADDRESS, mbinfo->framebuffer_addr, GRAPHICS_SIZE);
+	map_pages(FRAMEBUFFER_ADDRESS, mbinfo->framebuffer_addr, GRAPHICS_SIZE, PAGE_WRITABLE);
 
 
     multiboot_module_t initramfs;
@@ -67,12 +72,14 @@ void kernel_init(multiboot_info_t *mbinfo)
     };
 
 
-    register_interrupt(div0_handler_trap, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
-    register_interrupt(double_fault_handler_trap, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
+    register_interrupt(div0_handler, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
+    register_interrupt(double_fault_handler, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
+    register_interrupt(page_fault_handler, EXCEPTION_PAGE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
+    register_interrupt(gpf_handler, EXCEPTION_GENERAL_PROTECTION_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
 
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 
     pid_t kmain = new_process((uword_t)kernel_main, PROC_MODE_KERNEL);
-    pid_t umain = new_process(0, PROC_MODE_USER);
+    pid_t umain = new_process((uword_t)user_init, PROC_MODE_USER);
     switch_process_nosave(kmain);
 }

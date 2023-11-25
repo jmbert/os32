@@ -25,7 +25,7 @@ ptable _initialise_pdir()
 
 
     /* Finally, we recursively map the page directory */
-    pdir[TABLE_LENGTH-1] = (paddr)pdir_phys | 0x3;
+    pdir[TABLE_LENGTH-1] = (paddr)pdir_phys | (PAGE_PRESENT | PAGE_WRITABLE);
 
     return (ptable)pdir_phys;
 }

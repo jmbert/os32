@@ -2,16 +2,20 @@
 
 .globl ring_switch
 ring_switch:
-    pop %ecx /* Data segment */
-    pop %edx /* Code segment */
+    pop %edx /* Data segment */
+    pop %ecx /* Code segment */
     pop %ebx /* Return Address */
     
-    mov %cx, %ds
-    mov %cx, %es
-    mov %cx, %gs
-    mov %cx, %fs
+    
+    mov %dx, %ds
+    mov %dx, %es
+    mov %dx, %gs
+    mov %dx, %fs
 
-    pushf
     push %edx
+    push %esp
+    pushf
+    push %ecx
     push %ebx
+    
     iret

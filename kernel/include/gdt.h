@@ -21,10 +21,10 @@ typedef struct [[gnu::packed]]
 
 typedef enum
 {
-    GDT_KERNEL_CODE = 0x8,
-    GDT_KERNEL_DATA = 0x10,
-    GDT_USER_CODE = 0x18,
-    GDT_USER_DATA = 0x20,
+    GDT_KERNEL_CODE = 0x8 | 0x0,
+    GDT_KERNEL_DATA = 0x10 | 0x0,
+    GDT_USER_CODE = 0x18 | 0x3,
+    GDT_USER_DATA = 0x20 | 0x3,
     GDT_TSS = 0x28,
 }_gdt_segment_selectors_e;
 

@@ -29,15 +29,23 @@ extern vaddr paging_start;
 
 #define GET_PDIR_PHYS() (PALIGN_ADDR(GET_PDE(0x3ff)))
 
+typedef enum
+{
+    PAGE_PRESENT = 1 << 0,
+    PAGE_WRITABLE = 1 << 1,
+    PAGE_USER = 1 << 2,
+    PAGE_WRITETHROUGH = 1 << 3,
+    PAGE_CACHE_DISABLE = 1 << 4,
+}_page_flags_e;
 
 extern void _invlpg(paddr addr);
 
 void paging_init();
 
-int map_page(vaddr to, paddr from);
+int map_page(vaddr to, paddr from, unsigned short flags);
 
-int map_pages(vaddr to, paddr from, size_t length);
+int map_pages(vaddr to, paddr from, size_t length, unsigned short flags);
 
-int mmap(vaddr to, size_t size);
+int mmap(vaddr to, size_t size, unsigned short flags);
 
 #endif

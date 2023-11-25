@@ -6,9 +6,9 @@
 
 typedef struct
 {
-    unsigned int eflags;
-    unsigned int cs_padded;
     unsigned int eip;
+    unsigned int cs_padded;
+    unsigned int eflags;
 }int_stackframe_t;
 
 typedef enum
@@ -39,7 +39,9 @@ typedef enum
     EXCEPTION_SECURITY,
 }_int_exceptions_e;
 
-void div0_handler_trap(int_stackframe_t *sf, unsigned int err_code);
-void double_fault_handler_trap(int_stackframe_t *sf, unsigned int err_code);
+void div0_handler(int_stackframe_t *sf);
+void double_fault_handler(int_stackframe_t *sf, unsigned int err_code);
+void page_fault_handler(int_stackframe_t *sf, unsigned int err_code);
+void gpf_handler(int_stackframe_t *sf, unsigned int err_code);
 
 #endif

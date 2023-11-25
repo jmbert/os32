@@ -13,15 +13,14 @@ int switch_process_nosave(pid_t proc)
         return -1;
     }
 
-    /* Swap page directory */
-    SET_PDIR(process->page_directory);
 
-    /* Get new stack, with registers off of it */
-    _LOAD_STACK(process);
-    _LOAD_REGISTERS();
+    current_process = process->pid;
+    unsigned int _random_valid_ptr;
 
-    current_process = getpid();
-    /* Now in new process */
+    unsigned int new_code = (process->privilege == PROC_MODE_KERNEL) ? GDT_KERNEL_CODE : GDT_USER_CODE ;
+    unsigned int new_data = (process->privilege == PROC_MODE_KERNEL) ? GDT_KERNEL_DATA : GDT_USER_DATA ;
+
+    switch_stack((unsigned int)(process->page_directory), (unsigned int)&_random_valid_ptr, (unsigned int)(process->stack_state._esp), new_code, new_data);
 
     return 0;
 }
@@ -37,26 +36,11 @@ int switch_process(pid_t proc)
         return -1;
     }
 
-    /* Save stack and registers */
-    _SAVE_REGISTERS();
-    _SAVE_STACK(current);
+    current_process = process->pid;
+    unsigned int new_code = (process->privilege == PROC_MODE_KERNEL) ? GDT_KERNEL_CODE : GDT_USER_CODE ;
+    unsigned int new_data = (process->privilege == PROC_MODE_KERNEL) ? GDT_KERNEL_DATA : GDT_USER_DATA ;
 
-    /* Swap page directory */
-    SET_PDIR(process->page_directory);
-
-    /* Get new stack, with registers off of it */
-    _LOAD_STACK(process);
-    _LOAD_REGISTERS();
-
-    current_process = getpid();
-
-    unsigned int new_code = (process->privilege == PROC_MODE_KERNEL) ? GDT_USER_CODE : GDT_KERNEL_CODE;
-    unsigned int new_data = (process->privilege == PROC_MODE_KERNEL) ? GDT_USER_DATA : GDT_KERNEL_DATA;
-
-    /* Now to change to ring 3 */
-    unsigned int ret = __builtin_return_address(0);
-
-    ring_switch(new_code, new_data, ret);
+    switch_stack((unsigned int)(process->page_directory), (unsigned int)&(current->stack_state._esp), (unsigned int)(process->stack_state._esp), new_code, new_data);
 
     return 0;
 }

@@ -15,18 +15,18 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
 
     ptable pdir = _initialise_pdir();
 
-
     ptable old_pdir = GET_PDIR_PHYS();
     /* Easier to work inside the process page directory */
     SET_PDIR(pdir);
 
     uword_t proc_esp = _STACK_POSITION;
-    mmap(proc_esp-_STACK_SIZE, _STACK_SIZE);
+    mmap(proc_esp-_STACK_SIZE, _STACK_SIZE, PAGE_WRITABLE | ((privilege == PROC_MODE_KERNEL) ? 0 : PAGE_USER));
 
     /* Set up stack for return to the process */
     
     proc_esp -= _REGISTER_SIZE; /* For EIP */
     *(uword_t*)proc_esp = start_eip;
+    proc_esp -= _REGISTER_SIZE*2; /* For segments */
     proc_esp -= _REGISTER_SIZE; /* For ESP */
     *(uword_t*)proc_esp = proc_esp+_REGISTER_SIZE;
     uword_t proc_ebp = proc_esp;
@@ -34,7 +34,6 @@ pid_t new_process(uword_t start_eip, _process_type_e privilege)
     proc_esp += _REGISTER_SIZE * 2; /* Go back to ebp */
     *(uword_t*)proc_esp = proc_ebp;
     proc_esp -= _REGISTER_SIZE * 2; /* Go back to top */
-
 
     /* Get our old pages back */
     SET_PDIR(old_pdir);
