@@ -54,6 +54,7 @@ void terminal_write_swap()
     unsigned int y = 0;
 
     unsigned char draw = 0;
+    unsigned int printed = 0;
 
     for (unsigned int i = 0; i < FILE_LENGTH(stdout); i++ )
     {
@@ -76,9 +77,13 @@ void terminal_write_swap()
         default:
             write_char(c, x, y, term_font, swap.buffer, -1, 0);
             x++;
+            printed++;
             break;
         }
     }
 
-    graphics_swap(swap);
+    if (printed > 0)
+    {
+        graphics_swap(swap);
+    }
 }
