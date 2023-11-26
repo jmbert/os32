@@ -22,6 +22,67 @@ static char *basename(char *path) {
     return (base == NULL) ? p : base;
 }
 
+static int _read_tar_header(tar_header_t *hdr, void *buffer, unsigned int size)
+{
+    if (!validate_header(hdr))
+    {
+        return -1;
+    }
+    if (decodeOctal(hdr->sizeOct, 12) < size)
+    {
+        return -2;
+    }
+    memcpy(buffer, (void*)(DATA_FROM_HEADER(hdr)), size);
+    return 0;
+}
+
+int vfs_read_tar(struct _vfs_node *_node, void *buffer, unsigned int size)
+{
+    if (_node->_base->type != VFS_USTAR)
+    {
+        return -1;
+    }
+    tar_header_t *file = _node->_base->ustar_header;
+
+    return _read_tar_header(file, buffer, size);
+}
+
+static int _write_tar_header(tar_header_t *hdr, void *buffer, unsigned int size, unsigned int offset)
+{
+    if (!validate_header(hdr))
+    {
+        return -1;
+    }
+    if (decodeOctal(hdr->sizeOct, 12) < size)
+    {
+        return -2;
+    }
+    memcpy((void*)(DATA_FROM_HEADER(hdr) + offset), buffer, size);
+    return 0;
+}
+
+int vfs_write_tar(struct _vfs_node *_node, void *buffer, unsigned int size, unsigned int offset)
+{
+    if (_node->_base->type != VFS_USTAR)
+    {
+        return -1;
+    }
+    tar_header_t *file = _node->_base->ustar_header;
+
+    return _write_tar_header(file, buffer, size, offset);
+}
+
+int vfs_open_tar(struct _vfs_node *_node)
+{
+
+}
+
+int vfs_close_tar(struct _vfs_node *_node)
+{
+
+}
+
+
 static vfs_node_t *convert_to_node(tar_header_t *file)
 {
     vfs_node_t *node = malloc(sizeof(vfs_node_t));
@@ -29,12 +90,24 @@ static vfs_node_t *convert_to_node(tar_header_t *file)
     
     char *bname = basename(file->name);
     node->nameseg = bname;
+
+    node->open = vfs_open_tar;
+    node->close = vfs_close_tar;
     
 
     switch (file->type)
     {
     case TAR_NORMAL_FILE:
         node->type = VFS_NODE_FILE;
+
+        __FILE *base = (__FILE*)malloc(sizeof(__FILE));
+        base->type = VFS_USTAR;
+        base->ustar_header = file;
+        
+        node->_base = base;
+        node->read = vfs_read_tar;
+        node->write = vfs_write_tar;
+
         break;
     case TAR_DIR:
         node->type = VFS_NODE_DIRECTORY;

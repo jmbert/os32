@@ -53,4 +53,6 @@ char **tar_list_files(uint32_t archive);
 
 vfs_t convert_to_vfs(unsigned int archive);
 
+int validate_header(tar_header_t *header);
+
 #endif

@@ -37,8 +37,6 @@ void print_fs(vfs_node_t fs, unsigned int depth)
 
 void kernel_main()
 {
-
-    
     print_fs(*file_system.root, 0);
 
     HALT();
