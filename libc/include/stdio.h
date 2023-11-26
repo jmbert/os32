@@ -7,7 +7,7 @@
 
 
 #ifdef _IN_KERNEL
-#include <fs.h>
+#include <vfs/fd.h>
 #include <terminal.h>
 #define WRITE_SWAP() terminal_write_swap() 
 
@@ -17,9 +17,7 @@
 
 #define MAX_PRINTF_LIMIT 0x1000
 
-typedef _FILE FILE;
-
-
+typedef _OPEN_FILE FILE;
 
 int putchar(char c);
 
@@ -32,7 +30,6 @@ int printf(const char *fmt, ...);
 
 int vsprintf(char *str, const char *fmt, va_list args);
 int vprintf(const char *fmt, va_list args);
-
 
 int fputs(FILE *stream, const char *str);
 int fprintf(FILE *stream, const char *fmt, ...);

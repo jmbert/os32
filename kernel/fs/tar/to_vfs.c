@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <debug/exec.h>
 #include <string.h>
+#include <vfs.h>
 
 static char *basename(char *path) {
 
@@ -22,65 +23,6 @@ static char *basename(char *path) {
     return (base == NULL) ? p : base;
 }
 
-static int _read_tar_header(tar_header_t *hdr, void *buffer, unsigned int size)
-{
-    if (!validate_header(hdr))
-    {
-        return -1;
-    }
-    if (decodeOctal(hdr->sizeOct, 12) < size)
-    {
-        return -2;
-    }
-    memcpy(buffer, (void*)(DATA_FROM_HEADER(hdr)), size);
-    return 0;
-}
-
-int vfs_read_tar(struct _vfs_node *_node, void *buffer, unsigned int size)
-{
-    if (_node->_base->type != VFS_USTAR)
-    {
-        return -1;
-    }
-    tar_header_t *file = _node->_base->ustar_header;
-
-    return _read_tar_header(file, buffer, size);
-}
-
-static int _write_tar_header(tar_header_t *hdr, void *buffer, unsigned int size, unsigned int offset)
-{
-    if (!validate_header(hdr))
-    {
-        return -1;
-    }
-    if (decodeOctal(hdr->sizeOct, 12) < size)
-    {
-        return -2;
-    }
-    memcpy((void*)(DATA_FROM_HEADER(hdr) + offset), buffer, size);
-    return 0;
-}
-
-int vfs_write_tar(struct _vfs_node *_node, void *buffer, unsigned int size, unsigned int offset)
-{
-    if (_node->_base->type != VFS_USTAR)
-    {
-        return -1;
-    }
-    tar_header_t *file = _node->_base->ustar_header;
-
-    return _write_tar_header(file, buffer, size, offset);
-}
-
-int vfs_open_tar(struct _vfs_node *_node)
-{
-
-}
-
-int vfs_close_tar(struct _vfs_node *_node)
-{
-
-}
 
 
 static vfs_node_t *convert_to_node(tar_header_t *file)
@@ -89,10 +31,15 @@ static vfs_node_t *convert_to_node(tar_header_t *file)
 
     
     char *bname = basename(file->name);
+    if (strcmp(bname, ".") == 0)
+    {
+        bname[0] = '/';
+    }
     node->nameseg = bname;
 
-    node->open = vfs_open_tar;
-    node->close = vfs_close_tar;
+    file_ops_t ops;
+    ops.open = vfs_open;
+    ops.stat = vfs_stat_tar;
     
 
     switch (file->type)
@@ -100,13 +47,11 @@ static vfs_node_t *convert_to_node(tar_header_t *file)
     case TAR_NORMAL_FILE:
         node->type = VFS_NODE_FILE;
 
-        __FILE *base = (__FILE*)malloc(sizeof(__FILE));
-        base->type = VFS_USTAR;
-        base->ustar_header = file;
+        node->type = VFS_USTAR;
+        node->ustar_header = file;
         
-        node->_base = base;
-        node->read = vfs_read_tar;
-        node->write = vfs_write_tar;
+        ops.read = vfs_read_tar;
+        ops.write = vfs_write_tar;
 
         break;
     case TAR_DIR:
@@ -115,10 +60,10 @@ static vfs_node_t *convert_to_node(tar_header_t *file)
         node->children_len = 0;
         break;
     default:
-        node->type = VFS_NODE_FILE;
         break;
     }
 
+    node->ops = ops;
 
     return node;
 }
@@ -154,7 +99,8 @@ vfs_t convert_to_vfs(unsigned int archive)
         {
             current_parent->children[current_parent->children_len] = current_node;
             current_parent->children_len++;
-        } else
+        }
+        if (i == 0)
         {
             root_node = current_node;
         }

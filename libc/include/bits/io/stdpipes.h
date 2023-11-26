@@ -1,7 +1,7 @@
 #include <sys/cdefs.h>
 
 #ifdef _IN_KERNEL
-#include <fs.h>
+#include <vfs/fd.h>
 
 #ifndef __STDIN
 #define __STDIN 0

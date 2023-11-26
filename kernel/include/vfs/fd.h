@@ -2,6 +2,7 @@
 #define _FS_H
 
 #include <bits/defs/fs.h>
+#include <vfs.h>
 
 typedef enum
 {
@@ -20,29 +21,31 @@ typedef unsigned int fd_t;
 
 #define FD_UNASSIGNED 0xFFFFFFFF
 
-typedef struct _FILE
+typedef enum
+{
+    O_WRONLY,
+    O_APPEND,
+    O_RDONLY,
+}_open_file_mode_e;
+
+typedef struct _OPEN_FILE
 {
     fd_t fd;
-    _file_location_type_e location_type;
-    _file_type_e file_type;
+    
+    vfs_node_t *node;
 
-    unsigned char *buf;
-    unsigned char *base;
-    unsigned int size;
-}_FILE;
+    unsigned int mode;
+}_OPEN_FILE;
 
 typedef struct file_descriptor_table_t
 {
-    _FILE **_table;
+    _OPEN_FILE **_table;
     unsigned int _current_fd;
 }file_descriptor_table_t;
 
-fd_t new_virtual_file(void *buffer, unsigned int size);
-
-fd_t _add_new_file(_FILE *file);
-
-#define FILE_LENGTH(_file) ((_file)->buf - (_file)->base)
-#define FILE_LENGTH_LEFT(_file) ((_file)->size - FILE_LENGTH(_file))
+fd_t _add_new_file(_OPEN_FILE *file);
+fd_t _open(char *path, unsigned int modes);
+void _close_file(fd_t file);
 
 file_descriptor_table_t *get_fdtable();
 

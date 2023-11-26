@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 int putc(FILE *stream, char c)
 {
@@ -7,15 +8,11 @@ int putc(FILE *stream, char c)
     {
         return -2;
     }
-    if (FILE_LENGTH_LEFT(stream) > 0)
-    {
-        *(stream->buf) = c;
-        (stream->buf)++;
-        return 0;
-    } else
-    {
-        return EOF;
-    }
+
+    void *cbuffer = malloc(sizeof(char));
+    stream->node->ops.write(stream->node, cbuffer, 1, 0);
+    return 0;
+
 }
 
 int putchar(char c)

@@ -3,27 +3,49 @@
 
 char* strtok(char* s, char* delm)
 {
-    static int currIndex = 0;
-    if(!s || !delm || s[currIndex] == '\0')
-    return NULL;
-    char *W = (char *)malloc(sizeof(char)*100);
-    int i = currIndex, k = 0, j = 0;
-
-    while (s[i] != '\0'){
-        j = 0;
-        while (delm[j] != '\0'){
-            if (s[i] != delm[j])
-                W[k] = s[i];
-            else goto It;
-            j++;
-        }
-
-        i++;
-        k++;
+    // Stores the state of string
+    static char* input = NULL;
+ 
+    // Initialize the input string
+    if (s != NULL)
+    {
+        input = s;
     }
-It:
-    W[i] = 0;
-    currIndex = i+1;
-    //Iterator = ++ptr;
-    return W;
+
+    // Case for final token
+    if (input == NULL)
+    {
+        return NULL;
+    }
+ 
+    // Stores the extracted string
+    char* result = (char*)malloc(sizeof(char)*(strlen(input) + 1));
+    int i = 0;
+ 
+    // Start extracting string and
+    // store it in array
+    for (; input[i] != '\0'; i++) 
+    {
+ 
+        // If delimiter is not reached
+        // then add the current character
+        // to result[i]
+        if (input[i] != delm[0])
+        {
+            result[i] = input[i];
+        } else 
+        {
+            result[i] = '\0';
+            input = input + i + 1;
+            return result;
+        }
+    }
+ 
+    // Case when loop ends
+    result[i] = '\0';
+    input = NULL;
+ 
+    // Return the resultant pointer
+    // to the string
+    return result;
 }

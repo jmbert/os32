@@ -1,4 +1,4 @@
-#include <fs.h>
+#include <vfs/fd.h>
 #include <proc.h>
 
 file_descriptor_table_t *get_fdtable()

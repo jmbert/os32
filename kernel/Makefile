@@ -76,6 +76,13 @@ tss/tss_init.c\
 tss/load_tss.S\
 proc/ring_switch.S\
 proc/switch_stack.S\
+fs/open.c\
+fs/tar/vfs_ops.c\
+streams/init_streams.c\
+char_dev/new_char_device.c\
+fs/_add_node.c\
+fs/_get_node.c\
+fs/_open.c
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 

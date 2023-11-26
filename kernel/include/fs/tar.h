@@ -55,4 +55,10 @@ vfs_t convert_to_vfs(unsigned int archive);
 
 int validate_header(tar_header_t *header);
 
+int vfs_read_tar(void *_node, void *buffer, unsigned int size);
+
+int vfs_write_tar(void *_node, void *buffer, unsigned int size, unsigned int offset);
+
+int vfs_stat_tar(void *_node, stat_t *statbuffer);
+
 #endif

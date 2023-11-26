@@ -3,23 +3,15 @@
 
 int fputs(FILE *stream, const char *str)
 {
-    for (;*str!='\0';str++)
-    {
-        int err = putc(stream, *str);
-        if (err) {return err;}
-    }
+    stream->node->ops.write(stream->node, (void*)str, strlen(str), 0);
 
     return 0;
 }
 
 int puts(const char *str)
 {
-    for (;*str!='\0';str++)
-    {
-        int err = putchar(*str);
-        if (err) {return err;}
-    }
-    terminal_write_swap();
+    fputs(_GET_STDOUT(), str);
 
+    terminal_write_swap();
     return 0;
 }

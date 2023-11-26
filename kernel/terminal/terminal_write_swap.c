@@ -33,12 +33,13 @@ static void write_char(unsigned char c, unsigned int sx, unsigned int sy, font_t
     }
 }
 
+extern char *stdoutbase;
+extern char *stdoutbuf;
+
 void terminal_write_swap()
 {
 
     graphics_swap_buffer_t swap = _proclookup(getpid())->swap_buf;
-
-    FILE *stdout = _GET_STDOUT();
 
     unsigned int x = 0;
     unsigned int y = 0;
@@ -46,9 +47,9 @@ void terminal_write_swap()
     unsigned char draw = 0;
     unsigned int printed = 0;
 
-    for (unsigned int i = 0; i < FILE_LENGTH(stdout); i++ )
+    for (unsigned int i = 0; i < stdoutbuf-stdoutbase; i++ )
     {
-        unsigned char c = stdout->base[i];
+        unsigned char c = stdoutbase[i];
 
         switch (c)
         {
@@ -72,8 +73,6 @@ void terminal_write_swap()
         }
     }
 
-    if (printed > 0)
-    {
-        graphics_swap(swap);
-    }
+    graphics_swap(swap);
+    
 }

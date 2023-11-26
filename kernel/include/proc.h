@@ -6,7 +6,7 @@
 
 #include <paging.h>
 #include <string.h>
-#include <fs.h>
+#include <vfs/fd.h>
 #include <graphics.h>
 
 typedef unsigned long pid_t;

@@ -2,7 +2,7 @@
 #define _TERMINAL_H
 
 #include <graphics.h>
-#include <fs.h>
+#include <vfs/fd.h>
 #include <font.h>
 
 extern font_t term_font;
