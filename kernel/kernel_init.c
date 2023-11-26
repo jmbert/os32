@@ -76,6 +76,13 @@ void kernel_init(multiboot_info_t *mbinfo)
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 
     pid_t kmain = new_process((uword_t)kernel_main, PROC_MODE_KERNEL);
-    pid_t umain = new_process((uword_t)0, PROC_MODE_USER);
-    switch_process_nosave(kmain);
+
+    fd_t cat = _open("/drivers/cat", 0);
+    stat_t *cat_stat = malloc(sizeof(stat_t));
+    _stat(cat, cat_stat);
+    void *readBuf = malloc(sizeof(char)*cat_stat->size);
+    _read(cat, readBuf, cat_stat->size);
+
+    pid_t umain = process_from_elf(readBuf, PROC_MODE_USER);
+    switch_process_nosave(umain);
 }

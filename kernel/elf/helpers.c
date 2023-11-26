@@ -64,3 +64,12 @@ void print_secHeaders(Elf32_Shdr *headers, Elf32_Word num, char *off, Elf32_Word
         }
     }
 }
+
+int validate_elf(Elf32_Ehdr *elf)
+{
+    if (memcmp(elf->e_ident, "\x7felf", 4) != 0)
+    {
+        return 0;
+    }
+    return 1;
+}

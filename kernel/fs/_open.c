@@ -6,5 +6,5 @@
 fd_t _open(char *path, unsigned int modes)
 {
     vfs_node_t *node = _get_node(path);
-    node->ops.open(node, modes);
+    return node->ops.open(node, modes);
 }

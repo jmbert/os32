@@ -9,6 +9,8 @@
 #include <vfs/fd.h>
 #include <graphics.h>
 
+#include <elf.h>
+
 typedef unsigned long pid_t;
 
 typedef enum
@@ -61,6 +63,7 @@ int switch_process_nosave(pid_t proc);
 int switch_process(pid_t proc);
 
 pid_t new_process(uword_t start_eip, _process_type_e privilege);
+pid_t process_from_elf(Elf32_Ehdr *elfhdr, _process_type_e privilege);
 
 void print_processes();
 

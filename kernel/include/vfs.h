@@ -62,7 +62,6 @@ typedef struct _vfs
 void _add_node(char *path, vfs_node_t *node);
 vfs_node_t *_get_node(char *path);
 
-
 extern vfs_t file_system;
 
 #endif

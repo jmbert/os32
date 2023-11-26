@@ -82,7 +82,10 @@ streams/init_streams.c\
 char_dev/new_char_device.c\
 fs/_add_node.c\
 fs/_get_node.c\
-fs/_open.c
+fs/_open.c\
+fs/_rw.c\
+elf/load.c\
+proc/process_from_elf.c
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 

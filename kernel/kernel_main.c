@@ -9,11 +9,11 @@
 #include <fs/tar.h>
 #include <info/link_info.h>
 #include <stdlib.h>
-
+#include <elf_loader.h>
 #include <proc.h>
 
 void kernel_main()
 {
-    print_maps();
+
     HALT();
 }

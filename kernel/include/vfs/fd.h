@@ -45,6 +45,9 @@ typedef struct file_descriptor_table_t
 
 fd_t _add_new_file(_OPEN_FILE *file);
 fd_t _open(char *path, unsigned int modes);
+int _read(fd_t file, void *buffer, unsigned int size);
+int _write(fd_t file, void *buffer, unsigned int size, unsigned int offset);
+int _stat(fd_t file, stat_t *statbuffer);
 void _close_file(fd_t file);
 
 file_descriptor_table_t *get_fdtable();
