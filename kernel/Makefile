@@ -20,7 +20,7 @@ CC = $(TARGETTOOL)-gcc
 LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 
-CFLAGS += -mgeneral-regs-only
+CFLAGS += -fno-stack-protector -ffreestanding -nostdlib -mgeneral-regs-only
 CPPFLAGS+=-I$(SYSROOTINCLUDE)  -I$(SYSROOTLIBCINCLUDE)
 
 LDSCRIPT=linker.ld
@@ -85,7 +85,14 @@ fs/_get_node.c\
 fs/_open.c\
 fs/_rw.c\
 elf/load.c\
-proc/process_from_elf.c
+proc/process_from_elf.c\
+syscalls/syscall.S\
+syscalls/syscall_read.c\
+syscalls/syscall_open.c\
+syscalls/syscall_close.c\
+syscalls/syscall_stat.c\
+syscalls/syscall_write.c\
+fs/_close_file.c\
 
 OBJS = $(patsubst %.S,$(BUILD)/%.o,$(patsubst %.c,$(BUILD)/%.o,$(SRCS)))
 

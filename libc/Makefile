@@ -14,7 +14,7 @@ LD = $(TARGETTOOL)-ld
 AS = $(TARGETTOOL)-as
 AR = $(TARGETTOOL)-ar 
 
-CFLAGS += 
+CFLAGS += -fno-stack-protector -ffreestanding -nostdlib
 CPPFLAGS += -I$(LIBINCLUDE) -I$(KERNELINCLUDE)
 
 

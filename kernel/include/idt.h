@@ -28,8 +28,8 @@ typedef enum
     IDT_GATE_TYPE_INT32 = 0xE,
     IDT_GATE_TYPE_TRAP32,
 
-    IDT_GATE_PRIVILEGE_KERNEL = 0 << 4,
-    IDT_GATE_PRIVILEGE_USER = 3 << 4,
+    IDT_GATE_PRIVILEGE_KERNEL = 0 << 5,
+    IDT_GATE_PRIVILEGE_USER = 3 << 5,
 
 }_interrupt_flags_e;
 

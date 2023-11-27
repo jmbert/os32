@@ -1,6 +1,6 @@
 .PHONY: clean sysroot kernel drivers libc all
 
-CFLAGS += -fno-stack-protector -ffreestanding -nostdlib -m32 -fno-asynchronous-unwind-tables -Wall -Wpedantic -std=gnu23
+CFLAGS +=  -m32 -fno-asynchronous-unwind-tables -Wall -Wpedantic -std=gnu23
 CPPFLAGS += -MD 
 
 export CFLAGS CPPFLAGS

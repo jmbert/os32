@@ -4,6 +4,8 @@
 #include <vfs/fd.h>
 #include <stdlib.h>
 
+#include <terminal.h>
+
 #include <debug/exec.h>
 
 #define STDIN 0
@@ -32,6 +34,8 @@ int _write_stdout(void *_, char *buffer, unsigned int size)
     memcpy(stdoutbuf, buffer, size);
     stdoutbuf += size;
     stdoutlen -= size;
+
+    terminal_write_swap();
     return 0;
 }
 

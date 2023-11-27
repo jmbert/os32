@@ -2,10 +2,11 @@ MKFILE_PATH = $(firstword $(MAKEFILE_LIST))
 DRIVERROOT = $(shell dirname $(MKFILE_PATH))
 DRIVERINSTALL= $(DRIVERROOT)/../kernel/initramfs/drivers
 
-.PHONY: build_drivers
-
 DRIVERS=\
 cat
+
+.PHONY: build_drivers $(DRIVERS)
+
 
 build_drivers: $(DRIVERS)
 

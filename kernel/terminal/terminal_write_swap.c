@@ -51,11 +51,11 @@ void terminal_write_swap()
     {
         unsigned char c = stdoutbase[i];
 
+
         switch (c)
         {
         case '\0':
-            return;
-            break;
+            goto EXIT_PRINT;
         case '\n':
             x = 0;
             y++;
@@ -73,6 +73,7 @@ void terminal_write_swap()
         }
     }
 
-    graphics_swap(swap);
-    
+EXIT_PRINT:
+
+    memcpy(_GRAPHICS_PIXEL_BUFFER, swap.buffer, GRAPHICS_SIZE);
 }

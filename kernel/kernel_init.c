@@ -23,6 +23,7 @@
 #include <gdt.h>
 #include <idt.h>
 #include <interrupts.h>
+#include <syscalls.h>
 
 vaddr paging_start;
 
@@ -68,10 +69,12 @@ void kernel_init(multiboot_info_t *mbinfo)
         .chardata = fontdata,
     };
 
-    register_interrupt(div0_handler, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
-    register_interrupt(double_fault_handler, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
-    register_interrupt(page_fault_handler, EXCEPTION_PAGE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
-    register_interrupt(gpf_handler, EXCEPTION_GENERAL_PROTECTION_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_KERNEL);
+    register_interrupt(div0_handler, EXCEPTION_DIV0, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_USER);
+    register_interrupt(double_fault_handler, EXCEPTION_DOUBLE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_USER);
+    register_interrupt(page_fault_handler, EXCEPTION_PAGE_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_USER);
+    register_interrupt(gpf_handler, EXCEPTION_GENERAL_PROTECTION_FAULT, IDT_GATE_TYPE_TRAP32 | IDT_GATE_PRIVILEGE_USER);
+
+    register_interrupt(syscall, SYSCALL_INT, IDT_GATE_TYPE_INT32 | IDT_GATE_PRIVILEGE_USER);
 
     kernel_pdir = (ptable)GET_PDIR_PHYS();
 
